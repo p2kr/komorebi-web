@@ -1,28 +1,29 @@
+import { m } from "$lib/paraglide/messages";
 import { Blocks, Flame, Globe, House, Vault, WandSparkles } from "@lucide/svelte";
 
 export const appRoutes = Object.freeze({
 	"/dashboard": {
-		label: "Dashboard",
+		label: m.dashboard(),
 		icon: House
 	},
 	"/discover": {
-		label: "Discover",
+		label: m.discover(),
 		icon: Flame
 	},
 	"/crawler/matcher": {
-		label: "Smart Matcher",
+		label: m.smart_matcher(),
 		icon: WandSparkles
 	},
 	"/crawler/sandbox": {
-		label: "Crawler Sanbox",
+		label: m.crawler_sandbox(),
 		icon: Blocks
 	},
 	"/vault": {
-		label: "Vault",
+		label: m.vault(),
 		icon: Vault
 	},
 	"/browser": {
-		label: "Browser",
+		label: m.browser(),
 		icon: Globe
 	}
 });

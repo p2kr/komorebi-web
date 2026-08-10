@@ -2,19 +2,16 @@
 	import { goto } from "$app/navigation";
 	import { resolve } from "$app/paths";
 	import * as Sidebar from "$lib/components/ui/sidebar";
-	import { ChevronsUpDown, Plus, Settings, User } from "@lucide/svelte";
+	import { Settings } from "@lucide/svelte";
 	import { appRoutes } from "./routes";
 	import type { Entries } from "type-fest";
 	import Appbar from "./Appbar.svelte";
 	import logo from "$lib/assets/favicon.svg";
-	import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
-	import { userStore } from "./user.svelte";
-	import * as Avatar from "$lib/components/ui/avatar";
+	import { m } from "$lib/paraglide/messages";
+	import { Constants } from "$lib/core/constants";
+	import UserManagement from "./UserManagement.svelte";
 
 	const { children } = $props();
-
-	const users = $derived(userStore.users);
-	const currentUser = $derived(userStore.currentUser);
 </script>
 
 <Sidebar.Provider>
@@ -22,78 +19,49 @@
 		<Sidebar.Header>
 			<Sidebar.Menu>
 				<Sidebar.MenuItem class="hover:bg-transparent">
-					<Sidebar.MenuButton class="hover:bg-transparent active:bg-transparent   ">
+					<Sidebar.MenuButton class="active:bg-transparen hover:bg-transparent">
 						<img class="size-6 rounded-full object-cover" src={logo} alt="app logo" />
-						<span style:font-family="Segoe Script" class="text-2xl font-bold">Komorebi</span>
+						<span style:font-family="Segoe Script" class="text-2xl font-bold"
+							>{Constants.APP_NAME}</span
+						>
 					</Sidebar.MenuButton>
 				</Sidebar.MenuItem>
 			</Sidebar.Menu>
 		</Sidebar.Header>
-		<Sidebar.Header>
+
+		<!-- Using ml-2 in because icons were not centered when collapsed. -->
+		<Sidebar.Content class="ml-2">
 			<Sidebar.Menu>
 				{const routes = Object.entries(appRoutes) as Entries<typeof appRoutes>}
 				{#each routes as [routeKey, routeDetails] (routeKey)}
 					<Sidebar.MenuItem>
-						<Sidebar.MenuButton class="cursor-pointer" onclick={() => goto(resolve(routeKey))}>
+						<Sidebar.MenuButton
+							class="cursor-pointer"
+							onclick={() => goto(resolve(routeKey))}
+							tooltipContent={routeDetails.label}
+						>
 							<routeDetails.icon />
 							<span>{routeDetails.label}</span>
 						</Sidebar.MenuButton>
-						<!-- <Sidebar.MenuButton size="lg">
-							{#snippet child({ props })}
-								<a href={resolve(routeKey)} {...props}>
-									<routeDetails.icon />
-									<span>{routeDetails.label}</span>
-								</a>
-							{/snippet}
-						</Sidebar.MenuButton> -->
 					</Sidebar.MenuItem>
 				{/each}
 			</Sidebar.Menu>
-		</Sidebar.Header>
-		<!-- Using header in place of content because icons were not centered when collapsed. -->
-		<Sidebar.Content />
+		</Sidebar.Content>
 		<Sidebar.Footer>
 			<Sidebar.Menu>
 				<Sidebar.MenuItem>
-					<Sidebar.MenuButton class="cursor-pointer">
-						{#if currentUser}
-							<Avatar.Root>
-								<Avatar.Image src={currentUser.avatar_url} alt={currentUser.username} />
-							</Avatar.Root>
-							<div>
-								<span>{currentUser.username}</span>
-								<span>{currentUser.provider + currentUser.is_sandbox ? "Sandbox" : ""}</span>
-							</div>
-						{:else}
-							<User />
-							<span>No user configured</span>
-						{/if}
-					</Sidebar.MenuButton>
-					<DropdownMenu.Root>
-						<DropdownMenu.Trigger disabled={users.length === 0}>
-							{#snippet child({ props })}
-								<Sidebar.MenuAction {...props}>
-									<ChevronsUpDown />
-								</Sidebar.MenuAction>
-							{/snippet}
-						</DropdownMenu.Trigger>
-						<DropdownMenu.Content>
-							{#each users as user (user.id)}
-								<DropdownMenu.Item>
-									<Avatar.Root>
-										<Avatar.Image src={user.avatar_url} alt={user.username} />
-									</Avatar.Root>
-								</DropdownMenu.Item>
-							{/each}
-						</DropdownMenu.Content>
-					</DropdownMenu.Root>
+					<UserManagement />
 				</Sidebar.MenuItem>
 			</Sidebar.Menu>
 			<Sidebar.Menu>
 				<Sidebar.MenuItem>
-					<Sidebar.MenuButton class="cursor-pointer" onclick={() => goto(resolve("/settings"))}>
+					<Sidebar.MenuButton
+						class="cursor-pointer"
+						onclick={() => goto(resolve("/settings"))}
+						tooltipContent={m.settings()}
+					>
 						<Settings />
-						<span>Settings</span>
+						<span>{m.settings()}</span>
 					</Sidebar.MenuButton>
 				</Sidebar.MenuItem>
 			</Sidebar.Menu>
