@@ -1,3 +1,4 @@
+import { paraglideVitePlugin } from "@inlang/paraglide-js";
 import adapter from "@sveltejs/adapter-static";
 import { sveltekit } from "@sveltejs/kit/vite";
 import tailwindcss from "@tailwindcss/vite";
@@ -10,15 +11,18 @@ export default defineConfig({
 		sveltekit({
 			compilerOptions: {
 				// Force runes mode for the project, except for libraries. Can be removed in svelte 6.
-				runes: ({ filename }) =>
-					filename.split(/[/\\]/).includes("node_modules") ? undefined : true
+				runes: ({ filename }) => filename.split(/[/\\]/).includes("node_modules") ? undefined : true
 			},
 			adapter: adapter()
+		}),
+
+		paraglideVitePlugin({
+			project: "./project.inlang",
+			outdir: "./src/lib/paraglide",
+			strategy: ["url"]
 		})
 	],
-	resolve: {
-		tsconfigPaths: true
-	},
+	resolve: { tsconfigPaths: true },
 	test: {
 		expect: { requireAssertions: true },
 		projects: [
@@ -49,10 +53,7 @@ export default defineConfig({
 	},
 	server: {
 		proxy: {
-			"/api": {
-				target: "http://localhost:8080",
-				changeOrigin: true
-			}
+			"/api": { target: "http://localhost:8080", changeOrigin: true }
 		}
 	}
 });
