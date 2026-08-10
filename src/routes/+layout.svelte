@@ -1,42 +1,37 @@
 <script lang="ts">
-	import type { Pathname } from '$app/types';
-	import { resolve } from '$app/paths';
-	import { page } from '$app/state';
-	import { locales, localizeHref } from '$lib/paraglide/runtime';
+	import type { Pathname } from "$app/types";
+	import { resolve } from "$app/paths";
+	import { page } from "$app/state";
+	import { locales, localizeHref } from "$lib/paraglide/runtime";
 	import "./layout.css";
 	import favicon from "$lib/assets/favicon.svg";
 	import Sidebar from "./Sidebar.svelte";
+	import { Constants } from "$lib/core/constants";
 
 	let { children } = $props();
 </script>
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
-	<title>Komorebi</title>
+	<title>{Constants.APP_NAME}</title>
 </svelte:head>
 
 <Sidebar>{@render children()}</Sidebar>
 
 <div style="display:none">
 	{#each locales as locale (locale)}
-		<a
-			href={resolve(localizeHref(page.url.pathname, { locale }) as Pathname)}
-		>{locale}</a>
+		<a href={resolve(localizeHref(page.url.pathname, { locale }) as Pathname)}>{locale}</a>
 	{/each}
 </div>
 
 <div style="display:none">
 	{#each locales as locale (locale)}
-		<a
-			href={resolve(localizeHref(page.url.pathname, { locale }) as Pathname)}
-		>{locale}</a>
+		<a href={resolve(localizeHref(page.url.pathname, { locale }) as Pathname)}>{locale}</a>
 	{/each}
 </div>
 
 <div style="display:none">
 	{#each locales as locale (locale)}
-		<a
-			href={resolve(localizeHref(page.url.pathname, { locale }) as Pathname)}
-		>{locale}</a>
+		<a href={resolve(localizeHref(page.url.pathname, { locale }) as Pathname)}>{locale}</a>
 	{/each}
 </div>
