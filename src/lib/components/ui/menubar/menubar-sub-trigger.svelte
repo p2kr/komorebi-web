@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Menubar as MenubarPrimitive } from "bits-ui";
-	import { IconChevronRight } from '@tabler/icons-svelte';
+	import { IconChevronRight } from "@tabler/icons-svelte";
 	import { cn, type WithoutChild } from "$lib/utils.js";
 
 	let {
@@ -19,7 +19,7 @@
 	data-slot="menubar-sub-trigger"
 	data-inset={inset}
 	class={cn(
-		"gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground data-inset:pl-7 data-open:bg-accent data-open:text-accent-foreground [&_svg:not([class*='size-'])]:size-4 flex cursor-default items-center outline-none select-none",
+		"flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-none select-none focus:bg-accent focus:text-accent-foreground data-inset:pl-7 data-open:bg-accent data-open:text-accent-foreground [&_svg:not([class*='size-'])]:size-4",
 		className
 	)}
 	{...restProps}

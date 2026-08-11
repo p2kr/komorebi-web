@@ -18,23 +18,23 @@ import YearSelect from "./range-calendar-year-select.svelte";
 import Root from "./range-calendar.svelte";
 
 export {
-	Day,
+	Caption,
 	Cell,
+	Day,
 	Grid,
-	Header,
-	Months,
-	GridRow,
-	Heading,
 	GridBody,
 	GridHead,
+	GridRow,
 	HeadCell,
+	Header,
+	Heading,
+	Month,
+	MonthSelect,
+	Months,
+	Nav,
 	NextButton,
 	PrevButton,
-	MonthSelect,
-	YearSelect,
-	Caption,
-	Nav,
-	Month,
 	//
 	Root as RangeCalendar,
+	YearSelect
 };

@@ -33,7 +33,7 @@
 						<Avatar.Image src={currentUser.avatar_url} alt={currentUser.username} />
 					</Avatar.Root>
 					<div>
-						<span class="font-bold">{currentUser.username}</span>
+						<div class="line-clamp-1 font-bold">{currentUser.username}</div>
 						<div class="text-xs uppercase">
 							<span>{currentUser.provider}</span>
 							{#if currentUser.is_sandbox}
@@ -52,22 +52,26 @@
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content side="top" align="start">
 		{#each users as user (user.id)}
-			<DropdownMenu.Item onSelect={() => userStore.setCurrentUser(user)}>
-				<Avatar.Root class="size-5">
-					<Avatar.Image src={user.avatar_url} alt={user.username} />
-				</Avatar.Root>
-				<div>
-					<span class="font-bold">{user.username}</span>
-					<div class="text-xs uppercase">
-						<span>{user.provider}</span>
-						{#if user.is_sandbox}
-							<span>{m.sandbox()}</span>
-						{/if}
+			{#if user.id !== currentUser?.id}
+				<DropdownMenu.Item onSelect={() => userStore.setCurrentUser(user)}>
+					<Avatar.Root>
+						<Avatar.Image src={user.avatar_url} alt={user.username} />
+					</Avatar.Root>
+					<div>
+						<div class="line-clamp-1">{user.username}</div>
+						<div class="text-xs uppercase">
+							<span>{user.provider}</span>
+							{#if user.is_sandbox}
+								<span>{m.sandbox()}</span>
+							{/if}
+						</div>
 					</div>
-				</div>
-			</DropdownMenu.Item>
+				</DropdownMenu.Item>
+			{/if}
 		{/each}
-		<DropdownMenu.Separator />
+		{#if users.length > 0}
+			<DropdownMenu.Separator />
+		{/if}
 		<DropdownMenu.Item onSelect={() => goto(resolve("/settings/user"))}>
 			<Settings2 />
 			<span>{m.configure()}</span>

@@ -8,16 +8,21 @@ type HomePageState = {
 };
 
 export const load: LayoutServerLoad = async function ({ fetch }) {
-	// fetch users
-	const resp = await fetch(Constants.BASE_API + "/user/all", {
+	return {
+		users: await loadUsers(fetch)
+	} as HomePageState;
+};
+
+// fetch users
+async function loadUsers(_fetch: typeof fetch) {
+	const resp = await _fetch(Constants.BASE_API + "/user/all", {
 		method: "post"
 	});
 	if (resp.status == 200) {
 		const data: ApiResponse<User[]> = await resp.json();
 		if (data.success) {
-			return {
-				users: data.data
-			} as HomePageState;
+			return data.data;
 		}
 	}
-};
+	return [];
+}

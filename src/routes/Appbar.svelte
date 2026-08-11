@@ -6,7 +6,7 @@
 	import { appRoutes } from "./routes";
 
 	// @ts-expect-error "/" is not declared in appRoutes
-	const currentPage = appRoutes[page.url.pathname]?.label;
+	const currentPageLabel = appRoutes[page.url.pathname]?.label;
 </script>
 
 <div class="mb-2 flex items-center gap-4">
@@ -14,10 +14,10 @@
 	<Breadcrumb.Root>
 		<Breadcrumb.List>
 			<Breadcrumb.Item>{Constants.APP_NAME}</Breadcrumb.Item>
-			{#if currentPage}
+			{#if currentPageLabel}
 				<Breadcrumb.Separator />
 				<!-- TODO: Replace with active screen -->
-				<Breadcrumb.Item>{currentPage}</Breadcrumb.Item>
+				<Breadcrumb.Item>{currentPageLabel}</Breadcrumb.Item>
 			{/if}
 		</Breadcrumb.List>
 	</Breadcrumb.Root>

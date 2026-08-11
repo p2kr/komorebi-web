@@ -10,24 +10,24 @@ import Title from "./field-title.svelte";
 import Field from "./field.svelte";
 
 export {
-	Field,
-	Set,
-	Legend,
-	Group,
 	Content,
-	Label,
-	Title,
 	Description,
-	Separator,
 	Error,
+	Field,
+	Content as FieldContent,
+	Description as FieldDescription,
+	Error as FieldError,
+	Group as FieldGroup,
+	Label as FieldLabel,
+	Legend as FieldLegend,
+	Separator as FieldSeparator,
 	//
 	Set as FieldSet,
-	Legend as FieldLegend,
-	Group as FieldGroup,
-	Content as FieldContent,
-	Label as FieldLabel,
 	Title as FieldTitle,
-	Description as FieldDescription,
-	Separator as FieldSeparator,
-	Error as FieldError,
+	Group,
+	Label,
+	Legend,
+	Separator,
+	Set,
+	Title
 };

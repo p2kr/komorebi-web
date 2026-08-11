@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Pagination as PaginationPrimitive } from "bits-ui";
-	import { IconChevronLeft } from '@tabler/icons-svelte';
+	import { IconChevronLeft } from "@tabler/icons-svelte";
 	import { buttonVariants } from "$lib/components/ui/button/index.js";
 	import { cn } from "$lib/utils.js";
 
@@ -14,11 +14,7 @@
 <PaginationPrimitive.PrevButton
 	bind:ref
 	aria-label="Go to previous page"
-	class={cn(
-		buttonVariants({ variant: "ghost", size: "default" }),
-		"pl-1.5!",
-		className
-	)}
+	class={cn(buttonVariants({ variant: "ghost", size: "default" }), "pl-1.5!", className)}
 	{...restProps}
 >
 	<IconChevronLeft data-icon="inline-start" />

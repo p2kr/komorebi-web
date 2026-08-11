@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { IconLayoutSidebar } from '@tabler/icons-svelte';
+	import { IconLayoutSidebar } from "@tabler/icons-svelte";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import { cn } from "$lib/utils.js";
 	import { useSidebar } from "./context.svelte.js";
@@ -31,6 +31,6 @@
 	}}
 	{...restProps}
 >
-	<IconLayoutSidebar  />
+	<IconLayoutSidebar />
 	<span class="sr-only">Toggle Sidebar</span>
 </Button>
