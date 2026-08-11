@@ -12,8 +12,19 @@
 	"settings": "Settings",
 
 	"sandbox": "Sandbox",
+	"oauth": "OAuth",
 
 	"no_user_configured": "No user configured",
 
-	"configure": "Configure"
+	"configure": "Configure",
+	"cancel": "Cancel",
+	"delete": "Delete",
+	"connected_users": "Connected Users",
+	"avatar": "Avatar",
+	"username": "Username",
+	"provider": "Provider",
+	"link_type": "Link Type",
+	"actions": "Actions",
+	"do_you_want_to_remove": "Do you want to remove",
+	"deleting": "Deleting"
 }

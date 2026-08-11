@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { mode } from "mode-watcher";
 	import { Toaster as Sonner, type ToasterProps as SonnerProps } from "svelte-sonner";
-	import { IconLoader } from '@tabler/icons-svelte';
-	import { IconCircleCheck } from '@tabler/icons-svelte';
-	import { IconAlertOctagon } from '@tabler/icons-svelte';
-	import { IconInfoCircle } from '@tabler/icons-svelte';
-	import { IconAlertTriangle } from '@tabler/icons-svelte';
+	import { IconLoader } from "@tabler/icons-svelte";
+	import { IconCircleCheck } from "@tabler/icons-svelte";
+	import { IconAlertOctagon } from "@tabler/icons-svelte";
+	import { IconInfoCircle } from "@tabler/icons-svelte";
+	import { IconAlertTriangle } from "@tabler/icons-svelte";
 
 	let { ...restProps }: SonnerProps = $props();
 </script>

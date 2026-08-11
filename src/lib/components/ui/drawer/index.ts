@@ -11,28 +11,27 @@ import Trigger from "./drawer-trigger.svelte";
 import Root from "./drawer.svelte";
 
 export {
-	Root,
-	NestedRoot,
+	Close,
 	Content,
 	Description,
-	Overlay,
-	Footer,
-	Header,
-	Title,
-	Trigger,
-	Portal,
-	Close,
-
 	//
 	Root as Drawer,
-	NestedRoot as DrawerNestedRoot,
+	Close as DrawerClose,
 	Content as DrawerContent,
 	Description as DrawerDescription,
-	Overlay as DrawerOverlay,
 	Footer as DrawerFooter,
 	Header as DrawerHeader,
+	NestedRoot as DrawerNestedRoot,
+	Overlay as DrawerOverlay,
+	Portal as DrawerPortal,
 	Title as DrawerTitle,
 	Trigger as DrawerTrigger,
-	Portal as DrawerPortal,
-	Close as DrawerClose,
+	Footer,
+	Header,
+	NestedRoot,
+	Overlay,
+	Portal,
+	Root,
+	Title,
+	Trigger
 };

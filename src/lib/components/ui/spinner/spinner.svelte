@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { IconLoader } from '@tabler/icons-svelte';
+	import { IconLoader } from "@tabler/icons-svelte";
 	import { cn } from "$lib/utils.js";
 	import type { SVGAttributes } from "svelte/elements";
 
@@ -15,4 +15,12 @@
 	}: SVGAttributes<SVGSVGElement> = $props();
 </script>
 
-<IconLoader {role} name={name === null ? undefined : name} color={color === null ? undefined : color} stroke={stroke === null ? undefined : stroke} aria-label={ariaLabel} class={cn("size-4 animate-spin", className)} {...restProps} />
+<IconLoader
+	{role}
+	name={name === null ? undefined : name}
+	color={color === null ? undefined : color}
+	stroke={stroke === null ? undefined : stroke}
+	aria-label={ariaLabel}
+	class={cn("size-4 animate-spin", className)}
+	{...restProps}
+/>

@@ -1,7 +1,6 @@
 import { StorageKeys } from "$lib/core/constants";
 import type { User } from "$lib/models/user";
 import localforage from "localforage";
-import { validate, version } from "uuid";
 
 class UserStore {
 	users: User[] = $state([]);
@@ -37,14 +36,6 @@ class UserStore {
 
 		await localforage.setItem(StorageKeys.CURRENT_USER_ID, user.id);
 		this.currentUser = user;
-	}
-
-	async deleteUser(userId: string) {
-		// validate if valid uuid
-		if (validate(userId) && version(userId) == 7) {
-			// is correct.
-			// TODO: implement this.
-		}
 	}
 }
 

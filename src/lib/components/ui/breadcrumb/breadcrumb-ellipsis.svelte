@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { IconDots } from '@tabler/icons-svelte';
+	import { IconDots } from "@tabler/icons-svelte";
 	import { cn, type WithElementRef, type WithoutChildren } from "$lib/utils.js";
 	import type { HTMLAttributes } from "svelte/elements";
 
@@ -15,9 +15,9 @@
 	data-slot="breadcrumb-ellipsis"
 	role="presentation"
 	aria-hidden="true"
-	class={cn("size-5 [&>svg]:size-4 flex items-center justify-center", className)}
+	class={cn("flex size-5 items-center justify-center [&>svg]:size-4", className)}
 	{...restProps}
 >
-	<IconDots  />
+	<IconDots />
 	<span class="sr-only">More</span>
 </span>

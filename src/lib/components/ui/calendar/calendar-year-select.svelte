@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Calendar as CalendarPrimitive } from "bits-ui";
-	import { IconChevronDown } from '@tabler/icons-svelte';
+	import { IconChevronDown } from "@tabler/icons-svelte";
 	import { cn, type WithoutChildrenOrChild } from "$lib/utils.js";
 
 	let {

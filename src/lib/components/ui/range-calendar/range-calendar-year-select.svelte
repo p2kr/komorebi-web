@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { RangeCalendar as RangeCalendarPrimitive } from "bits-ui";
-	import { IconChevronDown } from '@tabler/icons-svelte';
+	import { IconChevronDown } from "@tabler/icons-svelte";
 	import { cn, type WithoutChildrenOrChild } from "$lib/utils.js";
 
 	let {

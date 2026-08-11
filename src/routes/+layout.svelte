@@ -7,6 +7,7 @@
 	import favicon from "$lib/assets/favicon.svg";
 	import Sidebar from "./Sidebar.svelte";
 	import { Constants } from "$lib/core/constants";
+	import { Toaster } from "svelte-sonner";
 
 	let { children } = $props();
 </script>
@@ -15,6 +16,8 @@
 	<link rel="icon" href={favicon} />
 	<title>{Constants.APP_NAME}</title>
 </svelte:head>
+
+<Toaster position="top-center" />
 
 <Sidebar>{@render children()}</Sidebar>
 

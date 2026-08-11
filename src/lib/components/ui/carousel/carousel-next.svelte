@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { IconChevronRight } from '@tabler/icons-svelte';
+	import { IconChevronRight } from "@tabler/icons-svelte";
 	import { Button, type Props } from "$lib/components/ui/button/index.js";
 	import { cn } from "$lib/utils.js";
 	import { getEmblaContext } from "./context.js";
@@ -23,7 +23,7 @@
 	aria-disabled={!emblaCtx.canScrollNext}
 	disabled={!emblaCtx.canScrollNext}
 	class={cn(
-		"rounded-full absolute touch-manipulation",
+		"absolute touch-manipulation rounded-full",
 		emblaCtx.orientation === "horizontal"
 			? "inset-y-0 -end-12 my-auto"
 			: "start-1/2 -bottom-12 -translate-x-1/2 rotate-90",
@@ -34,6 +34,6 @@
 	bind:ref
 	{...restProps}
 >
-	<IconChevronRight  />
+	<IconChevronRight />
 	<span class="sr-only">Next slide</span>
 </Button>

@@ -6,17 +6,17 @@ import Image from "./avatar-image.svelte";
 import Root from "./avatar.svelte";
 
 export {
-	Root,
-	Image,
-	Fallback,
-	Badge,
-	Group,
-	GroupCount,
 	//
 	Root as Avatar,
-	Image as AvatarImage,
-	Fallback as AvatarFallback,
 	Badge as AvatarBadge,
+	Fallback as AvatarFallback,
 	Group as AvatarGroup,
 	GroupCount as AvatarGroupCount,
+	Image as AvatarImage,
+	Badge,
+	Fallback,
+	Group,
+	GroupCount,
+	Image,
+	Root
 };

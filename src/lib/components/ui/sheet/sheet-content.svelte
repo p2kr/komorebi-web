@@ -4,7 +4,7 @@
 
 <script lang="ts">
 	import { Dialog as SheetPrimitive } from "bits-ui";
-	import { IconX } from '@tabler/icons-svelte';
+	import { IconX } from "@tabler/icons-svelte";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import { cn, type WithoutChildrenOrChild } from "$lib/utils.js";
 	import SheetOverlay from "./sheet-overlay.svelte";
@@ -45,7 +45,7 @@
 			<SheetPrimitive.Close data-slot="sheet-close">
 				{#snippet child({ props })}
 					<Button variant="ghost" class="absolute top-3 right-3" size="icon-sm" {...props}>
-						<IconX  />
+						<IconX />
 						<span class="sr-only">Close</span>
 					</Button>
 				{/snippet}
