@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Authenticating...</title>
+</head>
+<body>
+    <p>Authenticating... this window should close automatically.</p>
+    <script>
+        // 1. Get the standard OAuth2 query parameters
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get("code");
+        const error = params.get("error");
+
+        // 2. Extract the state parameter (which we will format as JSON)
+        const stateParam = params.get("state");
+
+        if (window.opener && stateParam) {
+            try {
+                // Parse the JSON state payload
+                const stateData = JSON.parse(decodeURIComponent(stateParam));
+                const targetOrigin = stateData.origin;
+                const provider = stateData.provider;
+
+                // Validate origin
+                const origin = new URL(targetOrigin).origin;
+
+                // 3. Post a generic message back, including the provider name
+                window.opener.postMessage({
+                    type: "OAUTH_CALLBACK",
+                    provider: provider,
+                    code: code,
+                    error: error
+                }, origin);
+
+            } catch (err) {
+                console.error("Invalid state parameter payload.");
+            }
+        }
+
+        // 4. Close the popup
+        window.close();
+    </script>
+</body>
+</html>
