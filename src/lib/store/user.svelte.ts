@@ -22,6 +22,8 @@ class UserStore {
 			if (this.users.length > 0) {
 				this.currentUser = this.users[0];
 				await localforage.setItem(StorageKeys.CURRENT_USER_ID, this.currentUser.id);
+			} else {
+				this.currentUser = undefined;
 			}
 		} else {
 			this.currentUser = doesUserExist;

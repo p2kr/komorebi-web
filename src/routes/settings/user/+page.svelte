@@ -5,13 +5,15 @@
 	import * as Dialog from "$lib/components/ui/dialog";
 	import { Spinner } from "$lib/components/ui/spinner";
 	import * as Table from "$lib/components/ui/table";
-	import type { FailureResponse } from "$lib/core/api";
 	import type { User } from "$lib/models/user";
 	import { m } from "$lib/paraglide/messages";
 	import { userStore } from "$lib/store/user.svelte";
 	import { cn } from "$lib/utils";
 	import { Trash2 } from "@lucide/svelte";
 	import { toast } from "svelte-sonner";
+	import NewUser from "./NewUser.svelte";
+	import * as Item from "$lib/components/ui/item";
+	import type { SubmitFunction } from "./$types";
 
 	const users = $derived(userStore.users);
 	const currentUser = $derived(userStore.currentUser);
@@ -20,13 +22,24 @@
 	let userToDelete: User | undefined = $state(undefined);
 	let isDeleting = $state(false);
 
-	// $effect(() => {
-	// 	form.
-	// });
+	const handleFormSubmit = (() => {
+		isDeleting = true;
+		return ({ result, update }) => {
+			isDeleting = false;
+			if (result.type === "success") {
+				isDialogOpen = false;
+				userToDelete = undefined;
+			} else if (result.type === "failure") {
+				const msg = result.data;
+				toast(`${msg?.error.code} : ${msg?.error.msg}`);
+			}
+			update();
+		};
+	}) satisfies SubmitFunction;
 </script>
 
-<div>
-	<div class="text-lg">{m.connected_users()}</div>
+<div class="mb-2 text-2xl">{m.connected_users()}</div>
+<Item.Root variant="outline">
 	<Table.Root>
 		<Table.Header>
 			<Table.Row class="hover:bg-transparent">
@@ -66,66 +79,54 @@
 						</Button>
 					</Table.Cell>
 				</Table.Row>
+			{:else}
+				<Table.Row>
+					<Table.Cell colspan={5}>No users</Table.Cell>
+				</Table.Row>
 			{/each}
 		</Table.Body>
 	</Table.Root>
-	{#if userToDelete}
-		<Dialog.Root bind:open={isDialogOpen}>
-			<Dialog.Content
-				showCloseButton={false}
-				onInteractOutside={(e) => {
-					if (isDeleting) {
-						e.preventDefault();
-					}
-				}}
-			>
-				<Dialog.Header>
-					<Dialog.Title>{m.delete()}</Dialog.Title>
-				</Dialog.Header>
-				<div>
-					{m.do_you_want_to_remove()}<span class="font-mono">&nbsp;@{userToDelete.username}</span> ?
-				</div>
-				<Dialog.Footer>
-					<Dialog.Close
-						disabled={isDeleting}
-						type="button"
-						class={buttonVariants({ variant: "outline" })}
-					>
-						{m.cancel()}
-					</Dialog.Close>
-					<form
-						method="post"
-						action="?/deleteUser"
-						use:enhance={() => {
-							isDeleting = true;
-							return ({ result, update }) => {
-								isDeleting = false;
-								if (result.type === "success") {
-									isDialogOpen = false;
-									userToDelete = undefined;
-								} else {
-									// @ts-expect-error data is not present in type
-									const msg = result.data as FailureResponse;
-									toast(`${msg.error.code} : ${msg.error.msg}`);
-								}
-								update();
-							};
-						}}
-					>
-						<input type="hidden" name="user_id" value={userToDelete.id} />
-						{#if !isDeleting}
-							<Button type="submit" class={buttonVariants({ variant: "destructive" })}>
-								{m.delete()}
-							</Button>
-						{:else}
-							<Button disabled class={buttonVariants({ variant: "destructive" })}>
-								<Spinner />
-								{m.deleting()}
-							</Button>
-						{/if}
-					</form>
-				</Dialog.Footer>
-			</Dialog.Content>
-		</Dialog.Root>
-	{/if}
-</div>
+</Item.Root>
+{#if userToDelete}
+	<Dialog.Root bind:open={isDialogOpen}>
+		<Dialog.Content
+			showCloseButton={false}
+			onInteractOutside={(e) => {
+				if (isDeleting) {
+					e.preventDefault();
+				}
+			}}
+		>
+			<Dialog.Header>
+				<Dialog.Title>{m.delete()}</Dialog.Title>
+			</Dialog.Header>
+			<div>
+				{m.do_you_want_to_remove()}<span class="font-mono">&nbsp;@{userToDelete.username}</span> ?
+			</div>
+			<Dialog.Footer>
+				<Dialog.Close
+					disabled={isDeleting}
+					type="button"
+					class={buttonVariants({ variant: "outline" })}
+				>
+					{m.cancel()}
+				</Dialog.Close>
+				<form method="post" action="?/deleteUser" use:enhance={handleFormSubmit}>
+					<input type="hidden" name="user_id" value={userToDelete.id} />
+					{#if !isDeleting}
+						<Button type="submit" class={buttonVariants({ variant: "destructive" })}>
+							{m.delete()}
+						</Button>
+					{:else}
+						<Button disabled class={buttonVariants({ variant: "destructive" })}>
+							<Spinner />
+							{m.deleting()}
+						</Button>
+					{/if}
+				</form>
+			</Dialog.Footer>
+		</Dialog.Content>
+	</Dialog.Root>
+{/if}
+<div class="mb-2"></div>
+<NewUser />
