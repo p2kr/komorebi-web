@@ -12,3 +12,4 @@ dist
 node_modules
 .yarn
 .svelte-kit
+src/lib/paraglide/

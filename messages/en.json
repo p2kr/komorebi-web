@@ -26,5 +26,14 @@
 	"link_type": "Link Type",
 	"actions": "Actions",
 	"do_you_want_to_remove": "Do you want to remove",
-	"deleting": "Deleting"
+	"deleting": "Deleting",
+
+	"add_user": "Add User",
+	"select_a_provider": "Select a Provider",
+	"access_token": "Access Token",
+	"oauth_msg": "Connect by logging into account",
+	"sandbox_msg": "Connect as read-only Account",
+	"enter_access_token": "Enter Access Token",
+	"enter_username": "Enter Username",
+	"connect": "Connect"
 }

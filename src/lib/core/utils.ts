@@ -1,7 +1,14 @@
+import type { FailureResponse } from "$lib/core/api";
+import { toast } from "svelte-sonner";
+
 export function formToPayload(formData: FormData) {
 	return JSON.stringify(Object.fromEntries(formData.entries()));
 }
 
 export async function formToPayloadAsync(formData: Promise<FormData>) {
-	return JSON.stringify(Object.fromEntries((await formData).entries()));
+	return formToPayload(await formData);
+}
+
+export function toastFailure(resp?: FailureResponse) {
+	toast(`${resp?.error.code} -> ${resp?.error.msg}`);
 }

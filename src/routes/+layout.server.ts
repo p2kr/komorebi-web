@@ -21,7 +21,7 @@ async function loadUsers(_fetch: typeof fetch) {
 	if (resp.status == 200) {
 		const data: ApiResponse<User[]> = await resp.json();
 		if (data.success) {
-			return data.data;
+			return data.data.map(({ access_token: _, ...rest }) => rest);
 		}
 	}
 	return [];

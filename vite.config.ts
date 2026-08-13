@@ -33,10 +33,14 @@ export default defineConfig({
 					name: "client",
 					browser: {
 						enabled: true,
-						provider: playwright(),
+						provider: playwright({
+							launchOptions: {
+								channel: "chrome"
+							}
+						}),
 						instances: [{ browser: "chromium", headless: true }]
 					},
-					include: ["src/**/*.svelte.{test,spec}.{js,ts}"],
+					include: ["src/**/*.svelte.{test,spec}.{js,ts}", "tests/**/*.{test,spec}.{js,ts}"],
 					exclude: ["src/lib/server/**"]
 				}
 			},

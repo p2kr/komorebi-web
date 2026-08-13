@@ -69,7 +69,7 @@
 				</DropdownMenu.Item>
 			{/if}
 		{/each}
-		{#if users.length > 0}
+		{#if users.length > 1}
 			<DropdownMenu.Separator />
 		{/if}
 		<DropdownMenu.Item onSelect={() => goto(resolve("/settings/user"))}>

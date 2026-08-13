@@ -1,4 +1,5 @@
 import { Constants } from "$lib/core/constants";
+import { logger } from "$lib/core/telemetry";
 
 export type SuccessResponse<T> = {
 	success: true;
@@ -35,13 +36,13 @@ export async function myFetch<T>(
 
 	const abortController = new AbortController();
 	const timeoutId = setTimeout(() => {
-		console.log("Request timed out");
+		logger.log("Request timed out");
 		abortController.abort(new Error("Request timed out"));
 	}, TIMEOUT_SEC * 1000);
 
 	if (options.signal) {
 		options.signal.addEventListener("abort", () => {
-			console.log("Request aborted", options.signal?.reason);
+			logger.log("Request aborted", options.signal?.reason);
 			abortController.abort(options.signal?.reason);
 		});
 	}
@@ -60,8 +61,10 @@ export async function myFetch<T>(
 		// Act as a response interceptor
 		if (!response.ok) {
 			const respText = await response.text();
-			throw new Error(`${url}\n${respText}\n`, {
-				cause: `${response.status}:${response.statusText}]`
+			// Keep full details in the error cause for server-side logging;
+			// do NOT forward raw backend body to the caller.
+			throw new Error(`Request failed: ${response.status}`, {
+				cause: `[${response.status}:${response.statusText}] ${url} -> ${respText}`
 			});
 		}
 
