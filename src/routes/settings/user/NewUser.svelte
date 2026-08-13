@@ -44,7 +44,7 @@
 
 				if (!code || !codeVerifier) {
 					cancel();
-					toast("Unable to get auth code");
+					toast(m.unable_to_get_auth_code());
 					isLoading = false;
 					return;
 				}
@@ -52,8 +52,8 @@
 				formData.set("code", code);
 				formData.set("code_verifier", codeVerifier);
 			} catch {
-				toast("Error getting access token", {
-					description: "Authentication failed. Please try again."
+				toast(m.error_getting_access_token(), {
+					description: m.authentication_failed()
 				});
 				isLoading = false;
 				cancel();
@@ -65,10 +65,10 @@
 			if (result.type === "success") {
 				// TODO: Check if it works
 				invalidate((url) => url.pathname.endsWith("user/all"));
-				toast("Successfully authenticated");
+				toast(m.successfully_authenticated());
 			} else {
 				// @ts-expect-error data maybe a FailureResponse
-				utils.toastFailure(result.data || "Some error occurred");
+				utils.toastFailure(result.data || m.some_error_occurred());
 			}
 			isLoading = false;
 			update();

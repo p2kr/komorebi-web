@@ -81,7 +81,7 @@
 				</Table.Row>
 			{:else}
 				<Table.Row>
-					<Table.Cell colspan={5}>No users</Table.Cell>
+					<Table.Cell colspan={5}>{m.no_users()}</Table.Cell>
 				</Table.Row>
 			{/each}
 		</Table.Body>

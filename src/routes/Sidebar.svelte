@@ -20,7 +20,7 @@
 			<Sidebar.Menu>
 				<Sidebar.MenuItem class="hover:bg-transparent">
 					<Sidebar.MenuButton class="active:bg-transparen hover:bg-transparent">
-						<img class="size-6 rounded-full object-cover" src={logo} alt="app logo" />
+						<img class="size-6 rounded-full object-cover" src={logo} alt={m.app_logo()} />
 						<span style:font-family="Segoe Script" class="text-2xl font-bold"
 							>{Constants.APP_NAME}</span
 						>
