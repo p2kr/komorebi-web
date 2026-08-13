@@ -6,38 +6,42 @@
 <body>
     <p>Authenticating... this window should close automatically.</p>
     <script>
-        // 1. Get the standard OAuth2 query parameters
-        const params = new URLSearchParams(window.location.search);
-        const code = params.get("code");
-        const error = params.get("error");
+        // 1. State always comes back in the query string (both flows)
+        const queryParams = new URLSearchParams(window.location.search);
 
-        // 2. Extract the state parameter (which we will format as JSON)
-        const stateParam = params.get("state");
+        // 2. Authorization Code flow → credential in query string
+        const code  = queryParams.get("code");
+        const error = queryParams.get("error");
+
+        // 3. Implicit / Token flow → credential in hash fragment
+        const hashParams = new URLSearchParams(window.location.hash.slice(1)); // strip leading #
+        const accessToken = hashParams.get("access_token");
+        const hashError   = hashParams.get("error");
+
+        // 4. Resolve: whichever flow was used
+        const resolvedCode  = code  || accessToken  || null;
+        const resolvedError = error || hashError     || null;
+
+        const stateParam = queryParams.get("state") || hashParams.get("state");
 
         if (window.opener && stateParam) {
             try {
-                // Parse the JSON state payload
-                const stateData = JSON.parse(decodeURIComponent(stateParam));
-                const targetOrigin = stateData.origin;
-                const provider = stateData.provider;
+                const stateData   = JSON.parse(decodeURIComponent(stateParam));
+                const targetOrigin = new URL(stateData.origin).origin;
+                const provider     = stateData.provider;
 
-                // Validate origin
-                const origin = new URL(targetOrigin).origin;
-
-                // 3. Post a generic message back, including the provider name
                 window.opener.postMessage({
                     type: "OAUTH_CALLBACK",
-                    provider: provider,
-                    code: code,
-                    error: error
-                }, origin);
+                    provider,
+                    code:  resolvedCode,   // ← both flows use this field
+                    error: resolvedError
+                }, targetOrigin);
 
             } catch (err) {
                 console.error("Invalid state parameter payload.");
             }
         }
 
-        // 4. Close the popup
         window.close();
     </script>
 </body>
