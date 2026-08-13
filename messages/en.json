@@ -35,5 +35,14 @@
 	"sandbox_msg": "Connect as read-only Account",
 	"enter_access_token": "Enter Access Token",
 	"enter_username": "Enter Username",
-	"connect": "Connect"
+	"connect": "Connect",
+
+	"no_users": "No users",
+	"unable_to_get_auth_code": "Unable to get auth code",
+	"error_getting_access_token": "Error getting access token",
+	"authentication_failed": "Authentication failed. Please try again.",
+	"successfully_authenticated": "Successfully authenticated",
+	"some_error_occurred": "Some error occurred",
+	"this_is_dashboard": "This is Dashboard",
+	"app_logo": "app logo"
 }

@@ -1,4 +1,48 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
-	"hello_world": "Hello, {name} from es!"
+
+	"hello_world": "¡Hola, {name} desde es!",
+
+	"dashboard": "Panel de control",
+	"discover": "Descubrir",
+	"smart_matcher": "Emparejador Inteligente",
+	"crawler_sandbox": "Sandbox del Rastreador",
+	"vault": "Bóveda",
+	"browser": "Navegador",
+	"settings": "Configuración",
+
+	"sandbox": "Sandbox",
+	"oauth": "OAuth",
+
+	"no_user_configured": "Ningún usuario configurado",
+
+	"configure": "Configurar",
+	"cancel": "Cancelar",
+	"delete": "Eliminar",
+	"connected_users": "Usuarios conectados",
+	"avatar": "Avatar",
+	"username": "Nombre de usuario",
+	"provider": "Proveedor",
+	"link_type": "Tipo de enlace",
+	"actions": "Acciones",
+	"do_you_want_to_remove": "¿Deseas eliminar",
+	"deleting": "Eliminando",
+
+	"add_user": "Añadir usuario",
+	"select_a_provider": "Seleccionar un proveedor",
+	"access_token": "Token de acceso",
+	"oauth_msg": "Conectarse iniciando sesión en la cuenta",
+	"sandbox_msg": "Conectarse como cuenta de solo lectura",
+	"enter_access_token": "Ingresar token de acceso",
+	"enter_username": "Ingresar nombre de usuario",
+	"connect": "Conectar",
+
+	"no_users": "No hay usuarios",
+	"unable_to_get_auth_code": "No se pudo obtener el código de autenticación",
+	"error_getting_access_token": "Error al obtener el token de acceso",
+	"authentication_failed": "La autenticación falló. Por favor, inténtalo de nuevo.",
+	"successfully_authenticated": "Autenticado con éxito",
+	"some_error_occurred": "Ocurrió un error",
+	"this_is_dashboard": "Este es el Panel de control",
+	"app_logo": "logo de la aplicación"
 }
