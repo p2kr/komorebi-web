@@ -9,6 +9,6 @@ describe("utils test", () => {
 
 		const res = formToPayload(formData);
 
-		expect(res).toBe(JSON.stringify({ username: "testuser", access_token: "testtoken" }));
+		expect(res).toEqual({ username: "testuser", access_token: "testtoken" });
 	});
 });

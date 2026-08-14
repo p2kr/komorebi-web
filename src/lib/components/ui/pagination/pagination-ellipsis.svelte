@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { IconDots } from "@tabler/icons-svelte";
+	import MoreHorizontalIcon from "@lucide/svelte/icons/more-horizontal";
 	import { cn, type WithElementRef, type WithoutChildren } from "$lib/utils.js";
 	import type { HTMLAttributes } from "svelte/elements";
 
@@ -15,11 +15,11 @@
 	aria-hidden="true"
 	data-slot="pagination-ellipsis"
 	class={cn(
-		"flex size-8 items-center items-center justify-center justify-center [&_svg:not([class*='size-'])]:size-4",
+		"flex size-9 items-center items-center justify-center justify-center [&_svg:not([class*='size-'])]:size-4",
 		className
 	)}
 	{...restProps}
 >
-	<IconDots />
+	<MoreHorizontalIcon />
 	<span class="sr-only">More pages</span>
 </span>

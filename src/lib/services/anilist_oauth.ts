@@ -1,6 +1,7 @@
 import { PUBLIC_ANILIST_CLIENT_ID } from "$env/static/public";
 import { Constants } from "$lib/core/constants";
 import { logger } from "$lib/core/telemetry";
+import { m } from "$lib/paraglide/messages";
 import type { OauthClient } from "$lib/services/oauth";
 
 const anilistOauthUrl = "https://anilist.co/api/v2/oauth/authorize";
@@ -37,7 +38,7 @@ export class AnilistOauthClient implements OauthClient {
 
 			// --- TIMEOUT & CLEANUP LOGIC --- //
 
-			const timeoutMs = 30_000; // 30 seconds timeout
+			const timeoutMs = 60_000; // 60 seconds timeout
 
 			// Centralized cleanup to prevent memory leaks
 			const cleanup = () => {
@@ -52,7 +53,7 @@ export class AnilistOauthClient implements OauthClient {
 				if (popup && !popup.closed) {
 					popup.close();
 				}
-				reject(new Error("OAuth request timed out"));
+				reject(new Error(m.oauth_timed_out()));
 			}, timeoutMs);
 
 			// 2. Reject if the user manually closes the popup
@@ -64,7 +65,7 @@ export class AnilistOauthClient implements OauthClient {
 					// give in-flight postMessage time to arrive
 					setTimeout(() => {
 						window.removeEventListener("message", messageListener);
-						reject(new Error("OAuth popup was closed by the user"));
+						reject(new Error(m.oauth_popup_closed()));
 					}, 300);
 				}
 			}, 500);
@@ -99,7 +100,10 @@ export class AnilistOauthClient implements OauthClient {
 		});
 	}
 
-	exchangeCodeForToken(code: string, codeVerifier: string): Promise<string> {
-		return Promise.resolve(code || codeVerifier);
+	// anilist uses implicit grant instead of PKCE
+	async exchangeCodeForToken(code: string, code_verifier: string): Promise<string> {
+		const token = code || code_verifier;
+		if (token.trim().length === 0) throw new Error(m.no_access_token_received());
+		return token;
 	}
 }

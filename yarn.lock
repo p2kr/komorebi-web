@@ -426,12 +426,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lucide/svelte@npm:^1.30.0":
-  version: 1.30.0
-  resolution: "@lucide/svelte@npm:1.30.0"
+"@lucide/svelte@npm:^1.31.0":
+  version: 1.31.0
+  resolution: "@lucide/svelte@npm:1.31.0"
   peerDependencies:
     svelte: ^5
-  checksum: 10c0/783567e9423d4a6d5acf0555f5c80131ab29aa0868d52f638407b2c42588956d4abc49bde1025b2ba59f63a9bf46130bf63d8e028cc800ea934f99c719ea17b7
+  checksum: 10c0/b41eb103a634fba741706e0d6e8f8662344cf22a1b76b8ac0b1008e5eabfb2020f0668dbe98c95bd37a99fbe5b27a3a5125bf379533b58ca8d721f8d8342d51b
   languageName: node
   linkType: hard
 
@@ -2608,7 +2608,7 @@ __metadata:
     "@fontsource-variable/inter": "npm:^5.3.0"
     "@inlang/paraglide-js": "npm:^2.18.2"
     "@internationalized/date": "npm:^3.12.0"
-    "@lucide/svelte": "npm:^1.30.0"
+    "@lucide/svelte": "npm:^1.31.0"
     "@sveltejs/adapter-static": "npm:^3.0.10"
     "@sveltejs/kit": "npm:^2.63.0"
     "@sveltejs/vite-plugin-svelte": "npm:^7.1.2"
@@ -2628,6 +2628,7 @@ __metadata:
     formsnap: "npm:^2.0.1"
     globals: "npm:^17.6.0"
     husky: "npm:^9.1.7"
+    ky: "npm:^2.0.2"
     layerchart: "npm:^2.0.0"
     lint-staged: "npm:^17.3.0"
     localforage: "npm:^1.10.0"
@@ -2657,6 +2658,13 @@ __metadata:
     vitest-browser-svelte: "npm:^2.1.1"
   languageName: unknown
   linkType: soft
+
+"ky@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "ky@npm:2.0.2"
+  checksum: 10c0/5bac227454193003c819eed5a26b30ae9ac639648be2944547f1aad204a470261ae2a8f7537dac0fd4a6433264bb8f1081b25411bfb49ef5d05a0e21d18b2ab9
+  languageName: node
+  linkType: hard
 
 "kysely@npm:^0.28.12":
   version: 0.28.17

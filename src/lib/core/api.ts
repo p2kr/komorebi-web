@@ -1,5 +1,6 @@
+import { PUBLIC_API_URL } from "$env/static/public";
 import { Constants } from "$lib/core/constants";
-import { logger } from "$lib/core/telemetry";
+import ky, { type Options } from "ky";
 
 export type SuccessResponse<T> = {
 	success: true;
@@ -16,59 +17,24 @@ export type FailureResponse = {
 
 export type ApiResponse<T> = SuccessResponse<T> | FailureResponse;
 
-const TIMEOUT_SEC = 30;
-
-// A native fetch wrapper (similar to Axios interceptors)
-export async function myFetch<T>(
-	svelteFetch: typeof fetch,
+export async function doApiCall<T>(
 	endpoint: string,
-	options: RequestInit = {}
+	json?: unknown,
+	options?: Options
 ): Promise<ApiResponse<T>> {
-	// Act as a request interceptor (e.g., add base URL)
-	let url = endpoint;
-	if (!endpoint.startsWith("http")) {
-		if (endpoint.startsWith("/")) {
-			url = Constants.BASE_API + endpoint;
-		} else {
-			url = Constants.BASE_API + "/" + endpoint;
-		}
-	}
-
-	const abortController = new AbortController();
-	const timeoutId = setTimeout(() => {
-		logger.log("Request timed out");
-		abortController.abort(new Error("Request timed out"));
-	}, TIMEOUT_SEC * 1000);
-
-	if (options.signal) {
-		options.signal.addEventListener("abort", () => {
-			logger.log("Request aborted", options.signal?.reason);
-			abortController.abort(options.signal?.reason);
-		});
-	}
-
 	try {
-		const response = await svelteFetch(url, {
-			method: "POST",
-			...options,
-			headers: {
-				"Content-Type": "application/json",
-				...options.headers
-			},
-			signal: abortController.signal
-		});
+		endpoint = endpoint.startsWith("/") ? endpoint : "/" + endpoint;
+		const prefix = PUBLIC_API_URL + Constants.BASE_API; // TODO: Smart join (skip '/')
+		const resp: ApiResponse<T> = await ky(endpoint, {
+			method: "post",
+			json,
+			prefix,
+			timeout: 10_000,
+			totalTimeout: 30_000,
+			...options
+		}).json();
 
-		// Act as a response interceptor
-		if (!response.ok) {
-			const respText = await response.text();
-			// Keep full details in the error cause for server-side logging;
-			// do NOT forward raw backend body to the caller.
-			throw new Error(`Request failed: ${response.status}`, {
-				cause: `[${response.status}:${response.statusText}] ${url} -> ${respText}`
-			});
-		}
-
-		return response.json(); // Automatically parse JSON like Axios
+		return resp;
 	} catch (e) {
 		return {
 			success: false,
@@ -77,7 +43,40 @@ export async function myFetch<T>(
 				msg: e instanceof Error ? e.message : String(e)
 			}
 		} satisfies FailureResponse;
+	}
+}
+
+const apiCache: Record<string, AbortController> = {};
+
+/**
+ * By default, the cache key is the `endpoint`. Pass `cacheKey` in `options` to override.
+ */
+export async function doLatestApiCall<T>(
+	endpoint: string,
+	json?: unknown,
+	options?: Options & { cacheKey?: string }
+): Promise<ApiResponse<T>> {
+	// Differentiate requests. Allow a custom key (e.g., endpoint + method)
+	const key = options?.cacheKey ?? endpoint;
+
+	// Abort the previous request if it exists
+	if (apiCache[key]) {
+		apiCache[key].abort("Canceled by a newer request");
+	}
+
+	const controller = new AbortController();
+	apiCache[key] = controller;
+
+	try {
+		// Await the API call so we can hook into the 'finally' block
+		return await doApiCall<T>(endpoint, json, {
+			...options,
+			signal: controller.signal
+		});
 	} finally {
-		clearTimeout(timeoutId);
+		// Only clean up the cache if a NEWER request hasn't already overwritten it
+		if (apiCache[key] === controller) {
+			delete apiCache[key];
+		}
 	}
 }

@@ -1,8 +1,9 @@
 import type { FailureResponse } from "$lib/core/api";
+import { m } from "$lib/paraglide/messages";
 import { toast } from "svelte-sonner";
 
 export function formToPayload(formData: FormData) {
-	return JSON.stringify(Object.fromEntries(formData.entries()));
+	return Object.fromEntries(formData.entries());
 }
 
 export async function formToPayloadAsync(formData: Promise<FormData>) {
@@ -10,9 +11,13 @@ export async function formToPayloadAsync(formData: Promise<FormData>) {
 }
 
 export function toastFailure(resp: FailureResponse | string) {
-	if (typeof resp === "object" && resp.error) {
-		toast(`${resp.error.code} -> ${resp.error.msg}`);
+	if (resp != null && typeof resp === "object" && resp.error) {
+		toast(resp.error.code, {
+			description: resp.error.msg
+		});
 	} else {
-		toast(String(resp));
+		toast(m.error(), {
+			description: String(resp)
+		});
 	}
 }

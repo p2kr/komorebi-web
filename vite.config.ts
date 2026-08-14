@@ -14,13 +14,13 @@ export default defineConfig({
 				runes: ({ filename }) =>
 					filename.split(/[/\\]/).includes("node_modules") ? undefined : true
 			},
-			adapter: adapter()
+			adapter: adapter({ fallback: "index.html" })
 		}),
 
 		paraglideVitePlugin({
 			project: "./project.inlang",
 			outdir: "./src/lib/paraglide",
-			strategy: ["url"]
+			strategy: ["url", "baseLocale"]
 		})
 	],
 	resolve: { tsconfigPaths: true },
@@ -33,11 +33,7 @@ export default defineConfig({
 					name: "client",
 					browser: {
 						enabled: true,
-						provider: playwright({
-							launchOptions: {
-								channel: "chrome"
-							}
-						}),
+						provider: playwright({ launchOptions: { channel: "chrome" } }),
 						instances: [{ browser: "chromium", headless: true }]
 					},
 					include: ["src/**/*.svelte.{test,spec}.{js,ts}", "tests/**/*.{test,spec}.{js,ts}"],

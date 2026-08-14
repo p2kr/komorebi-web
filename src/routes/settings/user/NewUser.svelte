@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { enhance } from "$app/forms";
 	import { Button, buttonVariants } from "$lib/components/ui/button";
 	import * as Collapsible from "$lib/components/ui/collapsible";
 	import Input from "$lib/components/ui/input/input.svelte";
@@ -10,12 +9,11 @@
 	import { m } from "$lib/paraglide/messages";
 	import { cn } from "$lib/utils";
 	import { ExternalLink, Plus } from "@lucide/svelte";
-	import type { SubmitFunction } from "./$types";
-	import { invalidate } from "$app/navigation";
 	import * as utils from "$lib/core/utils";
 	import type { User } from "$lib/models/user";
-	import { getOauthClient } from "$lib/services/oauth";
 	import { toast } from "svelte-sonner";
+	import { addUser } from "$lib/services/user_service";
+	import { invalidate } from "$app/navigation";
 
 	let isPanelOpen = $state(false);
 	let isLoading = $state(false);
@@ -29,51 +27,28 @@
 		is_sandbox: false,
 		provider: Object.keys(providerMap)[0] as MediaProvider,
 		access_token: "",
-		username: "",
-		avatar_url: undefined
+		username: ""
 	});
 
-	const handleSubmit = (async ({ formData, cancel }) => {
+	async function handleFormSubmit(e: SubmitEvent) {
+		e.preventDefault();
+
+		const form = e.target as HTMLFormElement;
+
 		isLoading = true;
-		// check if oauth
-		if (!formData.get("is_sandbox")) {
-			// perform oauth
-			const oauthClient = getOauthClient(formData.get("provider") as MediaProvider);
-			try {
-				const { code, codeVerifier } = await oauthClient.getAuthCode();
 
-				if (!code || !codeVerifier) {
-					cancel();
-					toast(m.unable_to_get_auth_code());
-					isLoading = false;
-					return;
-				}
+		const formData = new FormData(form);
 
-				formData.set("code", code);
-				formData.set("code_verifier", codeVerifier);
-			} catch {
-				toast(m.error_getting_access_token(), {
-					description: m.authentication_failed()
-				});
-				isLoading = false;
-				cancel();
-				return;
-			}
+		const resp = await addUser(formData);
+		if (resp.success) {
+			invalidate("user:all");
+			toast(m.successfully_authenticated());
+		} else {
+			utils.toastFailure(resp);
 		}
 
-		return ({ result, update }) => {
-			if (result.type === "success") {
-				// TODO: Check if it works
-				invalidate((url) => url.pathname.endsWith("user/all"));
-				toast(m.successfully_authenticated());
-			} else {
-				// @ts-expect-error data maybe a FailureResponse
-				utils.toastFailure(result.data || m.some_error_occurred());
-			}
-			isLoading = false;
-			update();
-		};
-	}) satisfies SubmitFunction;
+		isLoading = false;
+	}
 </script>
 
 <Collapsible.Root bind:open={isPanelOpen}>
@@ -85,13 +60,13 @@
 	</Collapsible.Trigger>
 	<Collapsible.Content>
 		<Item.Root variant="outline">
-			<form class="new-user-table" method="post" use:enhance={handleSubmit}>
+			<form class="new-user-table" method="post" onsubmit={handleFormSubmit}>
 				<input type="hidden" name="provider" value={userInfo.provider} />
-				<input type="hidden" name="avatar_url" value={userInfo.avatar_url} />
+				<input type="hidden" name="is_sandbox" value={userInfo.is_sandbox} />
 
 				<Table.Root>
 					<Table.Body>
-						<Table.Row class="hover:bg-transparent">
+						<Table.Row>
 							<Table.Head>{m.provider()}</Table.Head>
 							<Table.Cell>
 								<Tabs.Root bind:value={userInfo.provider}>
@@ -119,7 +94,7 @@
 								</Tabs.Root>
 							</Table.Cell>
 						</Table.Row>
-						<Table.Row class="hover:bg-transparent">
+						<Table.Row>
 							<Table.Head>{m.link_type()}</Table.Head>
 							<Table.Cell>
 								<Tabs.Root
@@ -135,7 +110,7 @@
 								</Tabs.Root>
 							</Table.Cell>
 						</Table.Row>
-						<Table.Row class="hover:bg-transparent">
+						<Table.Row>
 							{#if userInfo.is_sandbox}
 								<Table.Head>{m.username()}</Table.Head>
 								<Table.Cell>
@@ -144,6 +119,7 @@
 										name="username"
 										placeholder={m.enter_username()}
 										bind:value={userInfo.username}
+										required
 									/>
 								</Table.Cell>
 							{:else}
@@ -159,9 +135,9 @@
 								</Table.Cell>
 							{/if}
 						</Table.Row>
-						<Table.Row class="hover:bg-transparent">
+						<Table.Row>
 							<Table.Cell colspan={2}>
-								<Button type="submit" formaction="?/addUser" class="w-full">
+								<Button type="submit" class="w-full">
 									{m.connect()}
 								</Button>
 							</Table.Cell>
@@ -173,11 +149,14 @@
 	</Collapsible.Content>
 </Collapsible.Root>
 
-<style>
+<style lang="postcss">
 	.new-user-table :global(td) {
 		min-width: 500px;
 	}
 	.new-user-table :global(th) {
 		width: 120px;
+	}
+	.new-user-table :global(tr) {
+		@apply hover:bg-transparent;
 	}
 </style>

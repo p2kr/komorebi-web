@@ -21,6 +21,7 @@ export class Locale {
 
 		overwriteSetLocale((locale) => {
 			this.#current = locale;
+
 			// eslint-disable-next-line svelte/no-navigation-without-resolve
 			goto(localizeUrl(page.url.pathname, { locale }).href);
 		});

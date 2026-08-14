@@ -1,75 +1,66 @@
-import { doApiCall, type SuccessResponse } from "$lib/core/api";
+import { doApiCall, type ApiResponse } from "$lib/core/api";
+import { logger } from "$lib/core/telemetry";
+import { formToPayload } from "$lib/core/utils";
 import type { MediaProvider } from "$lib/models/media";
 import type { User } from "$lib/models/user";
-import { validate, version } from "uuid";
+import { m } from "$lib/paraglide/messages";
+import { getOauthClient } from "$lib/services/oauth";
 
-export const useFetchUsers = () =>
-	createQuery(() => ({
-		queryKey: ["fetch-users"],
-		queryFn: async ({ signal }) => {
-			const response = await doApiCall<User[]>("user/all", undefined, signal);
-			if (response.success) {
-				return (response as SuccessResponse<User[]>).data || [];
-			}
-			return [];
+export async function addUser(formData: FormData): Promise<ApiResponse<User>> {
+	const isSandbox = formData.get("is_sandbox") == "true";
+	const provider = formData.get("provider") as MediaProvider;
+	const accessToken = formData.get("access_token");
+
+	logger.debug("addUser: provider=", provider, "is_sandbox=", isSandbox);
+
+	// exchange code and code_verifier for token
+	if (!isSandbox && !accessToken) {
+		const client = getOauthClient(provider);
+
+		const { code, codeVerifier } = await client.getAuthCode();
+		const accessToken = await client.exchangeCodeForToken(code, codeVerifier);
+
+		if (accessToken) {
+			formData.set("access_token", accessToken);
+		} else {
+			return {
+				success: false,
+				error: {
+					code: "access_token_error",
+					msg: m.failed_to_exchange_token()
+				}
+			};
 		}
-	}));
 
-export const useFetchUserById = (userId: string) =>
-	createQuery(() => ({
-		queryKey: ["fetch-user-by-id", userId],
-		queryFn: async ({ signal }) => {
-			if (!validate(userId) || version(userId) !== 7) {
-				throw new Error("Invalid user id");
-			}
-			const response = (await doApiCall<User>(
-				"user/one",
-				{
-					user_id: userId
-				},
-				signal
-			)) as SuccessResponse<User>;
-			if (response.success) {
-				return response.data || null;
-			}
-			return null;
-		}
-	}));
+		formData.delete("code");
+		formData.delete("code_verifier");
+	}
 
-export type SaveUserParam = {
-	username: string;
-	provider: MediaProvider;
-	avatar_url?: string;
-	access_token?: string;
-};
+	// Persist in db
+	const payload = formToPayload(formData);
+	const resp = await doApiCall<User>("user/add", {
+		...payload,
+		is_sandbox: isSandbox // backend not converting string to boolean.
+	});
 
-export const useSaveUser = () =>
-	createMutation(() => ({
-		mutationFn: async ({ username, provider, avatar_url, access_token }: SaveUserParam) => {
-			const response = (await doApiCall<User>("user/add", {
-				username,
-				provider,
-				avatar_url,
-				access_token
-			})) as SuccessResponse<User>;
+	logger.debug("added user : ", resp.success);
 
-			if (response.success) {
-				return response.data;
-			}
-			return null;
-		}
-	}));
+	return resp;
+}
 
-export const useDeleteUser = () =>
-	createMutation(() => ({
-		mutationFn: async (userId: string) => {
-			if (!validate(userId) || version(userId) !== 7) {
-				throw new Error("Invalid user id");
-			}
-			const response = await doApiCall("user/delete", {
-				user_id: userId
-			});
+export async function deleteUser(
+	formDataOrUserId: FormData | string
+): Promise<ApiResponse<string>> {
+	const payload =
+		formDataOrUserId instanceof FormData
+			? formDataOrUserId.get("user_id") || formDataOrUserId.get("userId")
+			: formDataOrUserId;
 
-			return response.success;
-		}
-	}));
+	const resp = await doApiCall<string>("user/delete", {
+		user_id: payload
+	});
+
+	logger.debug("deleting user ", payload, " :: ", resp.success);
+
+	return resp;
+}

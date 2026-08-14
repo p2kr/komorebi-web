@@ -1,10 +1,11 @@
 import { PUBLIC_MAL_CLIENT_ID } from "$env/static/public";
+import { doApiCall } from "$lib/core/api";
 import { Constants } from "$lib/core/constants";
 import { logger } from "$lib/core/telemetry";
+import { m } from "$lib/paraglide/messages";
 import type { OauthClient } from "$lib/services/oauth";
 
 const malAuthUrl = "https://myanimelist.net/v1/oauth2/authorize";
-const malTokenUrl = "https://myanimelist.net/v1/oauth2/token";
 const malClientId = PUBLIC_MAL_CLIENT_ID;
 
 function generateCodeVerifier(): string {
@@ -64,14 +65,14 @@ export class MalOauthClient implements OauthClient {
 				if (popup && !popup.closed) {
 					popup.close();
 				}
-				reject(new Error("OAuth request timed out"));
+				reject(new Error(m.oauth_timed_out()));
 			}, timeoutMs);
 
 			// 2. Reject if the user manually closes the popup
 			const checkClosedInterval = setInterval(() => {
 				if (popup?.closed) {
 					cleanup();
-					reject(new Error("OAuth popup was closed by the user"));
+					reject(new Error(m.oauth_popup_closed()));
 				}
 			}, 500);
 
@@ -101,27 +102,16 @@ export class MalOauthClient implements OauthClient {
 		});
 	}
 
-	async exchangeCodeForToken(code: string, codeVerifier: string): Promise<string> {
-		const response = await fetch(malTokenUrl, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/x-www-form-urlencoded",
-				"Access-Control-Allow-Origin": malTokenUrl
-			},
-			body: new URLSearchParams({
-				client_id: malClientId,
-				code: code,
-				code_verifier: codeVerifier,
-				grant_type: "authorization_code",
-				redirect_uri: Constants.HOSTED_AUTH_PAGE
-			})
+	async exchangeCodeForToken(code: string, code_verifier: string): Promise<string> {
+		const resp = await doApiCall<string>("oauth/exchange", {
+			provider: "MAL",
+			code,
+			code_verifier
 		});
 
-		const data = await response.json();
-		if (!response.ok) {
-			throw new Error(data.message || "Failed to exchange authorization code");
+		if (resp.success) {
+			return resp.data;
 		}
-
-		return data.access_token; // <--- Real Access Token
+		throw new Error(resp.error.msg, { cause: resp.error.code });
 	}
 }

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { IconDots } from "@tabler/icons-svelte";
+	import MoreHorizontalIcon from "@lucide/svelte/icons/more-horizontal";
 	import { cn, type WithElementRef, type WithoutChildren } from "$lib/utils.js";
 	import type { HTMLAttributes } from "svelte/elements";
 
@@ -18,6 +18,6 @@
 	class={cn("flex size-5 items-center justify-center [&>svg]:size-4", className)}
 	{...restProps}
 >
-	<IconDots />
+	<MoreHorizontalIcon />
 	<span class="sr-only">More</span>
 </span>

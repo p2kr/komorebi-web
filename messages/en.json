@@ -1,8 +1,6 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
-
 	"hello_world": "Hello, {name} from en!",
-
 	"dashboard": "Dashboard",
 	"discover": "Discover",
 	"smart_matcher": "Smart Matcher",
@@ -10,12 +8,9 @@
 	"vault": "Vault",
 	"browser": "Browser",
 	"settings": "Settings",
-
 	"sandbox": "Sandbox",
 	"oauth": "OAuth",
-
 	"no_user_configured": "No user configured",
-
 	"configure": "Configure",
 	"cancel": "Cancel",
 	"delete": "Delete",
@@ -27,7 +22,6 @@
 	"actions": "Actions",
 	"do_you_want_to_remove": "Do you want to remove",
 	"deleting": "Deleting",
-
 	"add_user": "Add User",
 	"select_a_provider": "Select a Provider",
 	"access_token": "Access Token",
@@ -36,7 +30,6 @@
 	"enter_access_token": "Enter Access Token",
 	"enter_username": "Enter Username",
 	"connect": "Connect",
-
 	"no_users": "No users",
 	"unable_to_get_auth_code": "Unable to get auth code",
 	"error_getting_access_token": "Error getting access token",
@@ -44,5 +37,11 @@
 	"successfully_authenticated": "Successfully authenticated",
 	"some_error_occurred": "Some error occurred",
 	"this_is_dashboard": "This is Dashboard",
-	"app_logo": "app logo"
+	"app_logo": "app logo",
+	"user_deleted_successfully": "User deleted successfully",
+	"oauth_timed_out": "Authentication timed out. Please try again.",
+	"oauth_popup_closed": "Authentication was cancelled.",
+	"no_access_token_received": "No access token was received.",
+	"failed_to_exchange_token": "Failed to obtain access token. Please try again.",
+	"error": "Error"
 }
