@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { enhance } from "$app/forms";
 	import * as Avatar from "$lib/components/ui/avatar";
 	import { Button, buttonVariants } from "$lib/components/ui/button";
 	import * as Dialog from "$lib/components/ui/dialog";
@@ -13,7 +12,9 @@
 	import { toast } from "svelte-sonner";
 	import NewUser from "./NewUser.svelte";
 	import * as Item from "$lib/components/ui/item";
-	import type { SubmitFunction } from "./$types";
+	import { deleteUser } from "$lib/services/user_service";
+	import { toastFailure } from "$lib/core/utils";
+	import { invalidate } from "$app/navigation";
 
 	const users = $derived(userStore.users);
 	const currentUser = $derived(userStore.currentUser);
@@ -22,20 +23,21 @@
 	let userToDelete: User | undefined = $state(undefined);
 	let isDeleting = $state(false);
 
-	const handleFormSubmit = (() => {
+	async function handleFormSubmit(e: SubmitEvent) {
+		e.preventDefault();
 		isDeleting = true;
-		return ({ result, update }) => {
-			isDeleting = false;
-			if (result.type === "success") {
-				isDialogOpen = false;
-				userToDelete = undefined;
-			} else if (result.type === "failure") {
-				const msg = result.data;
-				toast(`${msg?.error.code} : ${msg?.error.msg}`);
-			}
-			update();
-		};
-	}) satisfies SubmitFunction;
+		const formData = new FormData(e.target as HTMLFormElement);
+		const resp = await deleteUser(formData);
+		if (resp.success) {
+			isDialogOpen = false;
+			userToDelete = undefined;
+			toast(m.user_deleted_successfully());
+		} else {
+			toastFailure(resp);
+		}
+		invalidate("user:all");
+		isDeleting = false;
+	}
 </script>
 
 <div class="mb-2 text-2xl">{m.connected_users()}</div>
@@ -90,7 +92,6 @@
 {#if userToDelete}
 	<Dialog.Root bind:open={isDialogOpen}>
 		<Dialog.Content
-			showCloseButton={false}
 			onInteractOutside={(e) => {
 				if (isDeleting) {
 					e.preventDefault();
@@ -98,7 +99,7 @@
 			}}
 		>
 			<Dialog.Header>
-				<Dialog.Title>{m.delete()}</Dialog.Title>
+				<Dialog.Title class="text-lg">{m.delete()}</Dialog.Title>
 			</Dialog.Header>
 			<div>
 				{m.do_you_want_to_remove()}<span class="font-mono">&nbsp;@{userToDelete.username}</span> ?
@@ -111,14 +112,14 @@
 				>
 					{m.cancel()}
 				</Dialog.Close>
-				<form method="post" action="?/deleteUser" use:enhance={handleFormSubmit}>
+				<form method="post" onsubmit={handleFormSubmit}>
 					<input type="hidden" name="user_id" value={userToDelete.id} />
 					{#if !isDeleting}
-						<Button type="submit" class={buttonVariants({ variant: "destructive" })}>
+						<Button type="submit" variant="destructive">
 							{m.delete()}
 						</Button>
 					{:else}
-						<Button disabled class={buttonVariants({ variant: "destructive" })}>
+						<Button disabled variant="destructive">
 							<Spinner />
 							{m.deleting()}
 						</Button>

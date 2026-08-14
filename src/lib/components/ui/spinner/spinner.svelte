@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { IconLoader } from "@tabler/icons-svelte";
+	import Loader2Icon from "@lucide/svelte/icons/loader-2";
 	import { cn } from "$lib/utils.js";
 	import type { SVGAttributes } from "svelte/elements";
 
@@ -15,7 +15,7 @@
 	}: SVGAttributes<SVGSVGElement> = $props();
 </script>
 
-<IconLoader
+<Loader2Icon
 	{role}
 	name={name === null ? undefined : name}
 	color={color === null ? undefined : color}

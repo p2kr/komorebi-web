@@ -66,8 +66,9 @@
 		"vitest-browser-svelte": "^2.1.1"
 	},
 	"dependencies": {
-		"@lucide/svelte": "^1.30.0",
+		"@lucide/svelte": "^1.31.0",
 		"consola": "^3.4.2",
+		"ky": "^2.0.2",
 		"localforage": "^1.10.0",
 		"type-fest": "^5.8.0",
 		"uuid": "^14.0.1"

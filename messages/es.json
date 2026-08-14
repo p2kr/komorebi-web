@@ -1,8 +1,6 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
-
-	"hello_world": "¡Hola, {name} desde es!",
-
+	"hello_world": "Hello, {name} from es!",
 	"dashboard": "Panel de control",
 	"discover": "Descubrir",
 	"smart_matcher": "Emparejador Inteligente",
@@ -10,12 +8,9 @@
 	"vault": "Bóveda",
 	"browser": "Navegador",
 	"settings": "Configuración",
-
 	"sandbox": "Sandbox",
 	"oauth": "OAuth",
-
 	"no_user_configured": "Ningún usuario configurado",
-
 	"configure": "Configurar",
 	"cancel": "Cancelar",
 	"delete": "Eliminar",
@@ -27,7 +22,6 @@
 	"actions": "Acciones",
 	"do_you_want_to_remove": "¿Deseas eliminar",
 	"deleting": "Eliminando",
-
 	"add_user": "Añadir usuario",
 	"select_a_provider": "Seleccionar un proveedor",
 	"access_token": "Token de acceso",
@@ -36,7 +30,6 @@
 	"enter_access_token": "Ingresar token de acceso",
 	"enter_username": "Ingresar nombre de usuario",
 	"connect": "Conectar",
-
 	"no_users": "No hay usuarios",
 	"unable_to_get_auth_code": "No se pudo obtener el código de autenticación",
 	"error_getting_access_token": "Error al obtener el token de acceso",
@@ -44,5 +37,11 @@
 	"successfully_authenticated": "Autenticado con éxito",
 	"some_error_occurred": "Ocurrió un error",
 	"this_is_dashboard": "Este es el Panel de control",
-	"app_logo": "logo de la aplicación"
+	"app_logo": "logo de la aplicación",
+	"user_deleted_successfully": "Usuario eliminado exitosamente",
+	"oauth_timed_out": "La autenticación expiró. Por favor, inténtalo de nuevo.",
+	"oauth_popup_closed": "La autenticación fue cancelada.",
+	"no_access_token_received": "No se recibió ningún token de acceso.",
+	"failed_to_exchange_token": "No se pudo obtener el token de acceso. Por favor, inténtalo de nuevo.",
+	"error": "Error"
 }

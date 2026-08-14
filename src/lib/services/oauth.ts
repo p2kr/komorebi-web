@@ -7,7 +7,8 @@ export interface OauthClient {
 		code: string;
 		codeVerifier: string;
 	}>;
-	exchangeCodeForToken(code: string, codeVerifier: string): Promise<string>;
+
+	exchangeCodeForToken(code: string, codeVerifier: string): Promise<string | undefined>;
 }
 
 export function getOauthClient(provider: MediaProvider): OauthClient {

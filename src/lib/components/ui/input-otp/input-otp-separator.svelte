@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { IconMinus } from "@tabler/icons-svelte";
+	import MinusIcon from "@lucide/svelte/icons/minus";
 	import type { WithElementRef } from "$lib/utils.js";
 	import { cn } from "$lib/utils.js";
 	import type { HTMLAttributes } from "svelte/elements";
@@ -22,6 +22,6 @@
 	{#if children}
 		{@render children?.()}
 	{:else}
-		<IconMinus />
+		<MinusIcon />
 	{/if}
 </div>

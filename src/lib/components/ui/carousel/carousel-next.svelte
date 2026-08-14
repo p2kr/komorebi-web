@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { IconChevronRight } from "@tabler/icons-svelte";
+	import ChevronRightIcon from "@lucide/svelte/icons/chevron-right";
 	import { Button, type Props } from "$lib/components/ui/button/index.js";
 	import { cn } from "$lib/utils.js";
 	import { getEmblaContext } from "./context.js";
@@ -34,6 +34,6 @@
 	bind:ref
 	{...restProps}
 >
-	<IconChevronRight />
+	<ChevronRightIcon />
 	<span class="sr-only">Next slide</span>
 </Button>
