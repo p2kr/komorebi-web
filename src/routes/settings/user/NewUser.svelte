@@ -58,9 +58,9 @@
 		<Plus />
 		<span>{m.add_user()}</span>
 	</Collapsible.Trigger>
-	<Collapsible.Content>
+	<Collapsible.Content class="w-fit min-w-1/2">
 		<Item.Root variant="outline">
-			<form class="new-user-table" method="post" onsubmit={handleFormSubmit}>
+			<form class="new-user-table w-full" method="post" onsubmit={handleFormSubmit}>
 				<input type="hidden" name="provider" value={userInfo.provider} />
 				<input type="hidden" name="is_sandbox" value={userInfo.is_sandbox} />
 
@@ -150,9 +150,6 @@
 </Collapsible.Root>
 
 <style lang="postcss">
-	.new-user-table :global(td) {
-		min-width: 500px;
-	}
 	.new-user-table :global(th) {
 		width: 120px;
 	}

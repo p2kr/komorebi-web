@@ -67,7 +67,7 @@
 			</Sidebar.Menu>
 		</Sidebar.Footer>
 	</Sidebar.Root>
-	<main class="m-2">
+	<main class="m-2 h-full w-full">
 		<Appbar />
 		{@render children?.()}
 	</main>
