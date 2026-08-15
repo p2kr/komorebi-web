@@ -6,5 +6,6 @@ export enum Constants {
 
 export enum StorageKeys {
 	CURRENT_USER_ID = "komorebi-current-user-id",
-	ACTIVE_THEME = "komorebi-active-theme"
+	ACTIVE_THEME = "komorebi-active-theme",
+	SETTINGS = "komorebi-settings"
 }

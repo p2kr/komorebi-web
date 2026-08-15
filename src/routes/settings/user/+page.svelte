@@ -41,7 +41,7 @@
 </script>
 
 <div class="mb-2 text-2xl">{m.connected_users()}</div>
-<Item.Root variant="outline">
+<Item.Root variant="outline" class="w-fit min-w-1/2">
 	<Table.Root>
 		<Table.Header>
 			<Table.Row class="hover:bg-transparent">

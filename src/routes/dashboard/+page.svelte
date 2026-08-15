@@ -1,5 +1,15 @@
 <script lang="ts">
-	import { m } from "$lib/paraglide/messages";
+	import type { PageProps } from "./$types";
+	import Filters from "./Filters.svelte";
+
+	const { data }: PageProps = $props();
 </script>
 
-<div>{m.this_is_dashboard()} {Math.random()}</div>
+<Filters />
+{#if data.dashboardItems.success}
+	{#each data.dashboardItems.data.data as mediaEntry (mediaEntry.media.id)}
+		<pre>{JSON.stringify(mediaEntry, null, 2)}</pre>
+	{/each}
+{:else}
+	<p>{data.dashboardItems.error.msg}</p>
+{/if}

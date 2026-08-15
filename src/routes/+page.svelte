@@ -1,6 +1,6 @@
 <script lang="ts">
+	import { goto } from "$app/navigation";
 	import { resolve } from "$app/paths";
-	import { redirect } from "@sveltejs/kit";
 
-	redirect(308, resolve("/dashboard"));
+	goto(resolve("/dashboard"));
 </script>
