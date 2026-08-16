@@ -5,7 +5,14 @@
 	import { hashString } from "$lib/core/utils";
 	import { omitBy, isNil } from "es-toolkit";
 
-	let { class: className, src, height, width, ...restProps }: HTMLImgAttributes = $props();
+	let {
+		class: className,
+		wrapperClass,
+		src,
+		height,
+		width,
+		...restProps
+	}: HTMLImgAttributes & { wrapperClass?: string } = $props();
 
 	let isLoaded = $state(false);
 
@@ -34,7 +41,7 @@
 	const computedClass = $derived(cn(className, isCensored && censor.type === "blur" && "blur-3xl"));
 </script>
 
-<div class="shrink-0 overflow-hidden rounded">
+<div class={cn("shrink-0 overflow-hidden", wrapperClass)}>
 	{#key finalSrc}
 		<img
 			{...restProps}

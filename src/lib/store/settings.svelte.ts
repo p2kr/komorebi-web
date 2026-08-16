@@ -8,6 +8,7 @@ export interface SettingsData {
 	global: {
 		theme: "light" | "dark" | "system";
 		font: string;
+		isSidebarOpen: boolean;
 		censor: {
 			enabled: boolean;
 			type: "blur" | "cats";
@@ -24,6 +25,7 @@ const DEFAULT_SETTINGS: SettingsData = {
 	global: {
 		theme: "system",
 		font: "Inter",
+		isSidebarOpen: true,
 		censor: {
 			enabled: false,
 			type: "blur",
