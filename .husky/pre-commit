@@ -1,2 +1,4 @@
 yarn test
 yarn lint-staged
+yarn lint
+yarn build

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
 	import { resolve } from "$app/paths";
-	import { page } from "$app/state";
 	import * as Avatar from "$lib/components/ui/avatar";
 	import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
 	import * as Sidebar from "$lib/components/ui/sidebar";
@@ -11,12 +10,6 @@
 
 	const users = $derived(userStore.users);
 	const currentUser = $derived(userStore.currentUser);
-
-	const fetchedUsers = $derived(page.data.users as typeof users);
-
-	$effect(() => {
-		userStore.setUsers(fetchedUsers || []);
-	});
 </script>
 
 <DropdownMenu.Root>

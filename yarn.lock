@@ -894,6 +894,44 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/query-core@npm:5.101.4":
+  version: 5.101.4
+  resolution: "@tanstack/query-core@npm:5.101.4"
+  checksum: 10c0/a407960303431e6498c6518cf6f8cc7283d3e4a95dbdc5e9fa42c217b9dd7afaffb82a4f2d36b38f578f745e8cf69ff8551abb947f5abcc0a290f3e3e75dc654
+  languageName: node
+  linkType: hard
+
+"@tanstack/query-devtools@npm:5.101.4":
+  version: 5.101.4
+  resolution: "@tanstack/query-devtools@npm:5.101.4"
+  checksum: 10c0/bd8c6bb3077d9561a24890ef78a9a1e81edde3910903e7e7cc667f181b763602b58ddb43b58c50a1fb550573e7a3e08f7f87d34eb7e2515b72973c4ac972bb36
+  languageName: node
+  linkType: hard
+
+"@tanstack/svelte-query-devtools@npm:^6.1.38":
+  version: 6.1.38
+  resolution: "@tanstack/svelte-query-devtools@npm:6.1.38"
+  dependencies:
+    "@tanstack/query-devtools": "npm:5.101.4"
+    esm-env: "npm:^1.2.1"
+  peerDependencies:
+    "@tanstack/svelte-query": ^6.1.38
+    svelte: ^5.25.0
+  checksum: 10c0/c6754a208a5981814a54a4105cdbbe8d89fca65596b0ddf1b8c36eb2944a34c5a1006dfa6b0e6b2ae954355a12fa4bddedcc9d28d9a716458223515bf4f52e30
+  languageName: node
+  linkType: hard
+
+"@tanstack/svelte-query@npm:^6.1.38":
+  version: 6.1.38
+  resolution: "@tanstack/svelte-query@npm:6.1.38"
+  dependencies:
+    "@tanstack/query-core": "npm:5.101.4"
+  peerDependencies:
+    svelte: ^5.25.0
+  checksum: 10c0/c1cf3d328898768be70c9d60c7651a48389cf716703663f99f18b671a1aebc10967838d85573781181bfdcd64ade71d7e4bfcfe7c561f8d87128d1411336954e
+  languageName: node
+  linkType: hard
+
 "@testing-library/svelte-core@npm:^1.1.3":
   version: 1.1.3
   resolution: "@testing-library/svelte-core@npm:1.1.3"
@@ -1928,6 +1966,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dompurify@npm:^3.4.13":
+  version: 3.4.13
+  resolution: "dompurify@npm:3.4.13"
+  dependencies:
+    "@types/trusted-types": "npm:^2.0.7"
+  dependenciesMeta:
+    "@types/trusted-types":
+      optional: true
+  checksum: 10c0/9c2a1a71e1a1d8b77953db7a39ffc935ef4ed4f10fe40770232128c2cbfd4c3dc677d3d7bae51eb24cc52d9ff3548612dc540ecb4343e89b26e809d2be2e0cfe
+  languageName: node
+  linkType: hard
+
 "effect@npm:^3.21.4":
   version: 3.22.1
   resolution: "effect@npm:3.22.1"
@@ -1987,6 +2037,20 @@ __metadata:
   version: 2.3.1
   resolution: "es-module-lexer@npm:2.3.1"
   checksum: 10c0/ada8b222772b5b8ea92eb6054c383233207418621855a07b480fdd36979b658a41414be09e793fcdd8a67a182741475f47830a01ff2ebd4353d7f6965c7c45f9
+  languageName: node
+  linkType: hard
+
+"es-toolkit@npm:^1.50.0":
+  version: 1.50.0
+  resolution: "es-toolkit@npm:1.50.0"
+  dependenciesMeta:
+    "@trivago/prettier-plugin-sort-imports@4.3.0":
+      unplugged: true
+    prettier-plugin-sort-re-exports@0.0.1:
+      unplugged: true
+    vitepress-plugin-sandpack@1.1.4:
+      unplugged: true
+  checksum: 10c0/80e3a212d337df6f20ed0330d1b62dda25f3ef6d4c83a33f13d521ccbf5b4ad1ac3e7e638572abd6080627f522707de76a5c9360350b713e5392739083ee1f24
   languageName: node
   linkType: hard
 
@@ -2615,13 +2679,17 @@ __metadata:
     "@tabler/icons-svelte": "npm:^3.46.0"
     "@tailwindcss/typography": "npm:^0.5.19"
     "@tailwindcss/vite": "npm:^4.3.0"
+    "@tanstack/svelte-query": "npm:^6.1.38"
+    "@tanstack/svelte-query-devtools": "npm:^6.1.38"
     "@types/node": "npm:^22"
     "@vitest/browser-playwright": "npm:^4.1.8"
     "@vitest/ui": "npm:4.1.10"
     bits-ui: "npm:^2.16.3"
     clsx: "npm:^2.1.1"
     consola: "npm:^3.4.2"
+    dompurify: "npm:^3.4.13"
     embla-carousel-svelte: "npm:^8.6.0"
+    es-toolkit: "npm:^1.50.0"
     eslint: "npm:^10.4.1"
     eslint-config-prettier: "npm:^10.1.8"
     eslint-plugin-svelte: "npm:^3.19.0"
@@ -2632,6 +2700,7 @@ __metadata:
     layerchart: "npm:^2.0.0"
     lint-staged: "npm:^17.3.0"
     localforage: "npm:^1.10.0"
+    lru-cache: "npm:^11.5.2"
     mode-watcher: "npm:^1.1.0"
     paneforge: "npm:^1.0.2"
     playwright: "npm:^1.60.0"
@@ -3025,6 +3094,13 @@ __metadata:
   dependencies:
     p-locate: "npm:^5.0.0"
   checksum: 10c0/d3972ab70dfe58ce620e64265f90162d247e87159b6126b01314dd67be43d50e96a50b517bce2d9452a79409c7614054c277b5232377de50416564a77ac7aad3
+  languageName: node
+  linkType: hard
+
+"lru-cache@npm:^11.5.2":
+  version: 11.5.2
+  resolution: "lru-cache@npm:11.5.2"
+  checksum: 10c0/ece1ad731f5b655e85d67047d04bfc13823dc77aa61c5454924a9869ba600a0104e39cc33d726021feef812bc347ca34a5608a5eb1972a5dd0870b7ecd42c3f2
   languageName: node
   linkType: hard
 

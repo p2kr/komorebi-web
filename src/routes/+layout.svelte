@@ -8,6 +8,9 @@
 	import Sidebar from "./Sidebar.svelte";
 	import { Constants } from "$lib/core/constants";
 	import { Toaster } from "svelte-sonner";
+	import { SvelteQueryDevtools } from "@tanstack/svelte-query-devtools";
+	import { QueryClientProvider } from "@tanstack/svelte-query";
+	import { queryClient } from "$lib/core/core";
 
 	let { children } = $props();
 
@@ -22,8 +25,14 @@
 	<title>{Constants.APP_NAME}</title>
 </svelte:head>
 
-<Toaster position="top-center" />
-<Sidebar>{@render children()}</Sidebar>
+<QueryClientProvider client={queryClient}>
+	<Toaster position="top-center" />
+	<Sidebar>{@render children()}</Sidebar>
+	<!-- Remove in production -->
+	{#if import.meta.env.DEV}
+		<SvelteQueryDevtools />
+	{/if}
+</QueryClientProvider>
 
 <div style="display:none">
 	{#each locales as locale (locale)}
