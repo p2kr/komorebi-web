@@ -10,6 +10,7 @@
 
 	const users = $derived(userStore.users);
 	const currentUser = $derived(userStore.currentUser);
+	const sidebar = Sidebar.useSidebar();
 </script>
 
 <DropdownMenu.Root>
@@ -46,7 +47,12 @@
 	<DropdownMenu.Content side="top" align="start">
 		{#each users as user (user.id)}
 			{#if user.id !== currentUser?.id}
-				<DropdownMenu.Item onSelect={() => userStore.setCurrentUser(user)}>
+				<DropdownMenu.Item
+					onSelect={() => {
+						userStore.setCurrentUser(user);
+						sidebar.setOpenMobile(false);
+					}}
+				>
 					<Avatar.Root>
 						<Avatar.Image src={user.avatar_url} alt={user.username} />
 					</Avatar.Root>
@@ -65,7 +71,12 @@
 		{#if users.length > 1}
 			<DropdownMenu.Separator />
 		{/if}
-		<DropdownMenu.Item onSelect={() => goto(resolve("/settings/user"))}>
+		<DropdownMenu.Item
+			onSelect={() => {
+				sidebar.setOpenMobile(false);
+				goto(resolve("/settings/user"));
+			}}
+		>
 			<Settings2 />
 			<span>{m.configure()}</span>
 		</DropdownMenu.Item>

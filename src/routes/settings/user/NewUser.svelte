@@ -120,6 +120,7 @@
 										placeholder={m.enter_username()}
 										bind:value={userInfo.username}
 										required
+										disabled={isLoading}
 									/>
 								</Table.Cell>
 							{:else}
@@ -130,7 +131,7 @@
 										name="access_token"
 										placeholder={m.enter_access_token()}
 										bind:value={userInfo.access_token}
-										disabled={userInfo.is_sandbox || isLoading}
+										disabled={isLoading}
 									/>
 								</Table.Cell>
 							{/if}

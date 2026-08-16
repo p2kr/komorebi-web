@@ -59,11 +59,11 @@
 {:else if resp}
 	{#if resp.success}
 		{#if resp.data.data.length > 0}
-			{#each resp.data.data as mediaEntry (mediaEntry.media.provider_id)}
-				<div class="flex gap-2">
+			<div class="mt-2 grid gap-x-2 gap-y-0 md:grid-cols-2 lg:grid-cols-3">
+				{#each resp.data.data as mediaEntry (mediaEntry.media.provider_id)}
 					<DashboadTile {mediaEntry} />
-				</div>
-			{/each}
+				{/each}
+			</div>
 		{:else}
 			{@render errorBoundary(
 				SearchX,

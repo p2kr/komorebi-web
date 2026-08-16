@@ -67,13 +67,13 @@
 	}
 </script>
 
-{#snippet chip(Icon?: Component, value?: unknown, tip?: string)}
+{#snippet statChip(Icon: Component, value: unknown | undefined, tip: string)}
 	{#if value || Icon}
 		<SimpleTooltip {tip}>
 			<div
-				class="mt-1 line-clamp-1 flex items-center gap-1 rounded border p-0.5 text-sm text-muted-foreground"
+				class="inline-flex items-center gap-1 rounded-sm border px-1.5 py-0.5 text-xs whitespace-nowrap text-muted-foreground"
 			>
-				<Icon class="size-4" />
+				<Icon class="size-3.5 shrink-0" />
 				{#if value}
 					<span>{String(value).toUpperCase()}</span>
 				{/if}
@@ -82,58 +82,86 @@
 	{/if}
 {/snippet}
 
-<!-- todo: fix layout to css grid  -->
-<div class="w-full rounded border p-2">
-	<div class="flex w-full gap-1">
+<div
+	class="row-span-3 mb-2 grid w-full min-w-0 grid-rows-subgrid overflow-hidden rounded border bg-card"
+>
+	<div class="flex min-w-0 justify-start gap-1 pr-1">
 		<!-- Cover Image -->
-		<CustomImage src={media.cover.medium} alt={primaryTitle} class="w-25" />
-		<div class="flex w-full flex-col items-start">
-			<!-- Title -->
-			<div class="line-clamp-2 font-serif text-base font-semibold">
+		<CustomImage
+			src={media.cover.large}
+			alt={primaryTitle}
+			wrapperClass="w-[28%] min-w-24 max-w-30 h-full shrink"
+			class="h-full w-full object-cover"
+		/>
+		<!-- Title -->
+		<div class="flex w-full min-w-0 flex-col gap-1">
+			<div class="line-clamp-2 font-serif text-base leading-snug font-semibold">
 				{primaryTitle}
 			</div>
-			<div class="line-clamp-1">
-				{secondaryTitle}
+			{#if secondaryTitle}
+				<div class="line-clamp-1 text-sm leading-snug text-muted-foreground italic">
+					{secondaryTitle}
+				</div>
+			{/if}
+			<!-- Genre pill -->
+			<div class="flex min-w-0 items-center gap-1 overflow-hidden rounded border bg-muted p-1">
+				<Tags class="size-3.5 shrink-0 text-muted-foreground" />
+				<span class="truncate text-xs text-muted-foreground">
+					{media.genres.join(" · ")}
+				</span>
 			</div>
 
-			<!-- Genre Chips -->
-			{@render chip(Tags, media.genres.join(" \u00b7 "), "Genres")}
-			<!-- Other Chips -->
-			<div class="flex gap-1">
-				{@render chip(Star, media.mean_score, "Rating")}
-				{@render chip(Hash, media.popularity, "Popularity")}
-				{@render chip(MonitorPlay, media.format, "Format")}
-				{@render chip(nsfwIcon, undefined, "Nsfw: " + media.nsfw)}
+			<!-- Stat chips -->
+			<div class="flex min-w-0 flex-wrap gap-1">
+				{@render statChip(Star, media.mean_score, "Rating")}
+				{@render statChip(Hash, media.popularity, "Popularity")}
+				{@render statChip(MonitorPlay, media.format, "Format")}
+				{@render statChip(nsfwIcon, undefined, "Nsfw: " + media.nsfw)}
 			</div>
-
 			<div class="flex-1"></div>
+			<!-- Episode / Progress -->
+			<div class="min-w-0">
+				<div class="mb-1 flex items-center justify-between gap-1">
+					<span class="text-sm font-medium sm:hidden lg:inline">{name}</span>
+					<div class="inline-flex items-center gap-1">
+						{#if !userStore.currentUser?.is_sandbox}
+							<SimpleTooltip tip="Decrease progress">
+								<Button variant="ghost">
+									<Minus />
+								</Button>
+							</SimpleTooltip>
+						{/if}
 
-			<!-- Progress Bar -->
-			<div class="w-full">
-				<div class="flex justify-between">
-					<div>
-						{name}
-					</div>
-					<div>
-						{mediaEntry.list_entry.progress ?? "?"} / {media.chapters ?? media.episodes ?? "?"}
+						<span class="text-sm text-muted-foreground tabular-nums">
+							{mediaEntry.list_entry.progress ?? "?"} / {media.chapters ?? media.episodes ?? "?"}
+						</span>
+
+						{#if !userStore.currentUser?.is_sandbox}
+							<SimpleTooltip tip="Increase progress">
+								<Button variant="ghost">
+									<Plus />
+								</Button>
+							</SimpleTooltip>
+						{/if}
 					</div>
 				</div>
-				<div>
-					{#if !userStore.currentUser?.is_sandbox}
-						<Progress value={mediaEntry.list_entry.progress} {max} />
-					{:else}
-						<Progress />
-					{/if}
-				</div>
+				{#if !userStore.currentUser?.is_sandbox}
+					<Progress value={mediaEntry.list_entry.progress} {max} class="h-1.5" />
+				{:else}
+					<Progress class="h-1.5" />
+				{/if}
 			</div>
 		</div>
 	</div>
-	<!-- Synopsis and its dialog -->
+
+	<!-- Synopsis — fills remaining space, clickable for full text -->
 	<Dialog.Root>
-		<Dialog.Trigger>
-			<div class="line-clamp-3 w-full text-justify text-sm">
+		<Dialog.Trigger class="min-w-0 p-1 text-left">
+			<p
+				class="line-clamp-3 cursor-pointer text-justify text-xs leading-relaxed text-muted-foreground transition-colors hover:text-foreground"
+			>
 				{synopsis}
-			</div>
+			</p>
 		</Dialog.Trigger>
 		<Dialog.Content>
 			<Dialog.Header>
@@ -150,26 +178,10 @@
 			</ScrollArea>
 		</Dialog.Content>
 	</Dialog.Root>
-	<div class="flex">
-		<Button variant="outline" onclick={handleGetNext}>
-			<Download />
-			<span>
-				Get {name}
-				{nextEntry}
-			</span>
-		</Button>
-		<div class="flex-1"></div>
-		<div class="flex gap-1">
-			<SimpleTooltip tip="Decrease progress">
-				<Button variant="ghost">
-					<Minus />
-				</Button>
-			</SimpleTooltip>
-			<SimpleTooltip tip="Increase progress">
-				<Button variant="ghost">
-					<Plus />
-				</Button>
-			</SimpleTooltip>
-		</div>
-	</div>
+
+	<!-- Actions -->
+	<Button variant="outline" onclick={handleGetNext} class="mx-1 mb-1 h-8 gap-1.5 text-xs ">
+		<Download class="size-3.5" />
+		<span>Get {name} {nextEntry}</span>
+	</Button>
 </div>

@@ -104,15 +104,15 @@
 			<div>
 				{m.do_you_want_to_remove()}<span class="font-mono">&nbsp;@{userToDelete.username}</span> ?
 			</div>
-			<Dialog.Footer>
-				<Dialog.Close
-					disabled={isDeleting}
-					type="button"
-					class={buttonVariants({ variant: "outline" })}
-				>
-					{m.cancel()}
-				</Dialog.Close>
-				<form method="post" onsubmit={handleFormSubmit}>
+			<form method="post" onsubmit={handleFormSubmit}>
+				<Dialog.Footer>
+					<Dialog.Close
+						disabled={isDeleting}
+						type="button"
+						class={buttonVariants({ variant: "outline" })}
+					>
+						{m.cancel()}
+					</Dialog.Close>
 					<input type="hidden" name="user_id" value={userToDelete.id} />
 					{#if !isDeleting}
 						<Button type="submit" variant="destructive">
@@ -124,8 +124,8 @@
 							{m.deleting()}
 						</Button>
 					{/if}
-				</form>
-			</Dialog.Footer>
+				</Dialog.Footer>
+			</form>
 		</Dialog.Content>
 	</Dialog.Root>
 {/if}

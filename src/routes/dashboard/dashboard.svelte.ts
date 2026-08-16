@@ -58,26 +58,26 @@ function getTitle(
 	switch (title_pref) {
 		case "english":
 			return (
-				mediaTitle.english ??
-				mediaTitle.romanized ??
-				mediaTitle.native ??
-				mediaTitle.user_preferred ??
+				mediaTitle.english ||
+				mediaTitle.romanized ||
+				mediaTitle.native ||
+				mediaTitle.user_preferred ||
 				unknownTitle
 			);
 		case "romanized":
 			return (
-				mediaTitle.romanized ??
-				mediaTitle.english ??
-				mediaTitle.native ??
-				mediaTitle.user_preferred ??
+				mediaTitle.romanized ||
+				mediaTitle.english ||
+				mediaTitle.native ||
+				mediaTitle.user_preferred ||
 				unknownTitle
 			);
 		case "native":
 			return (
-				mediaTitle.native ??
-				mediaTitle.english ??
-				mediaTitle.romanized ??
-				mediaTitle.user_preferred ??
+				mediaTitle.native ||
+				mediaTitle.english ||
+				mediaTitle.romanized ||
+				mediaTitle.user_preferred ||
 				unknownTitle
 			);
 		default:
