@@ -3,11 +3,19 @@ import type { User } from "$lib/models/user";
 import localforage from "localforage";
 
 class UserStore {
-	users: User[] = $state([]);
-	currentUser: User | undefined = $state(undefined);
+	#users: User[] = $state([]);
+	#currentUser: User | undefined = $state(undefined);
+
+	get users() {
+		return this.#users;
+	}
+
+	get currentUser() {
+		return this.#currentUser;
+	}
 
 	async setUsers(users: User[]) {
-		this.users = users;
+		this.#users = users;
 		await this.updateCurrentUser();
 	}
 
@@ -20,13 +28,13 @@ class UserStore {
 			// remove from key and update with latest user
 			await localforage.removeItem(StorageKeys.CURRENT_USER_ID);
 			if (this.users.length > 0) {
-				this.currentUser = this.users[0];
-				await localforage.setItem(StorageKeys.CURRENT_USER_ID, this.currentUser.id);
+				this.#currentUser = this.users[0];
+				await localforage.setItem(StorageKeys.CURRENT_USER_ID, this.#currentUser.id);
 			} else {
-				this.currentUser = undefined;
+				this.#currentUser = undefined;
 			}
 		} else {
-			this.currentUser = doesUserExist;
+			this.#currentUser = doesUserExist;
 		}
 	}
 
@@ -37,7 +45,7 @@ class UserStore {
 		}
 
 		await localforage.setItem(StorageKeys.CURRENT_USER_ID, user.id);
-		this.currentUser = user;
+		this.#currentUser = user;
 	}
 }
 

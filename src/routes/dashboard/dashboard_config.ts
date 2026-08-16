@@ -25,7 +25,6 @@ export interface FilterDefinition<T = string> {
 	placeholder?: string;
 	options?: FilterOption<T>[] | ((currentFilters: MediaClientParams) => FilterOption<T>[]);
 	isVisible?: (currentFilters: MediaClientParams) => boolean;
-	onChange?: (newValue: T, currentFilters: MediaClientParams) => void;
 }
 
 const mediaTypeOptions: FilterOption<MediaType>[] = [

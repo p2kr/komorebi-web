@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { invalidate } from "$app/navigation";
 	import * as Field from "$lib/components/ui/field";
 	import Item from "$lib/components/ui/item/item.svelte";
 	import * as Select from "$lib/components/ui/select";
@@ -13,11 +12,6 @@
 		const formData = new FormData(event.target as HTMLFormElement);
 		logger.debug(formData.entries());
 	}
-
-	$effect(() => {
-		logger.debug("filters updated", $state.snapshot(dashboardStore.filters));
-		invalidate("dashboard:all");
-	});
 </script>
 
 {#snippet renderSelect(config: FilterDefinition)}
@@ -27,8 +21,7 @@
 			type="single"
 			value={dashboardStore.filters[config.key]?.toString() ?? ""}
 			onValueChange={(val) => {
-				dashboardStore.filters[config.key] = val;
-				config.onChange?.(val, dashboardStore.filters);
+				dashboardStore.updateFilter(config.key, val);
 			}}
 		>
 			<Select.Trigger>

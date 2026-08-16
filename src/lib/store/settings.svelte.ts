@@ -1,63 +1,73 @@
 import { StorageKeys } from "$lib/core/constants";
 import { logger } from "$lib/core/telemetry";
+import { cloneDeep, debounce, merge } from "es-toolkit";
 import localforage from "localforage";
-import type { ConditionalExcept, PartialDeep } from "type-fest";
+import type { PartialDeep } from "type-fest";
 
-type GlobalSettings = {
-	theme: "light" | "dark" | "system";
-	font: string;
-};
+export interface SettingsData {
+	global: {
+		theme: "light" | "dark" | "system";
+		font: string;
+		censor: {
+			enabled: boolean;
+			type: "blur" | "cats";
+			media: "images" | "videos" | "both";
+		};
+	};
+	dashboard: {
+		title_pref: "english" | "romanized" | "native";
+		visible_chips: string[];
+	};
+}
 
-type DashboardSettings = {
-	title_pref: "english" | "romanized" | "native";
-	visible_chips: string[];
-};
-
-// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-export type SettingsData = ConditionalExcept<SettingsStore, Function>;
-
-class SettingsStore {
-	// global settings
-	global = $state<GlobalSettings>({
+const DEFAULT_SETTINGS: SettingsData = {
+	global: {
 		theme: "system",
-		font: "Inter"
-	});
-
-	// dashboard settings
-	dashboard = $state<DashboardSettings>({
+		font: "Inter",
+		censor: {
+			enabled: false,
+			type: "blur",
+			media: "images"
+		}
+	},
+	dashboard: {
 		title_pref: "english",
 		visible_chips: []
-	});
+	}
+};
 
-	// utilities
-	updateSettings(settings: PartialDeep<SettingsData>) {
-		this.global = { ...this.global, ...settings.global };
-		this.dashboard = { ...this.dashboard, ...settings.dashboard };
+class SettingsStore {
+	data = $state<SettingsData>(cloneDeep(DEFAULT_SETTINGS));
 
-		// fire and forget
-		this.saveSettings().catch((err) => logger.warn("failed to save settings:", err));
+	get global() {
+		return this.data.global;
 	}
 
-	// Update settings from local storage.
+	get dashboard() {
+		return this.data.dashboard;
+	}
+
+	updateSettings(settings: PartialDeep<SettingsData>) {
+		merge(this.data, settings);
+		this.saveSettings();
+	}
+
 	async loadSettings() {
 		try {
-			const settings = await localforage.getItem<SettingsStore>(StorageKeys.SETTINGS);
-			if (settings) {
-				this.updateSettings(settings);
-			}
+			const saved = await localforage.getItem<PartialDeep<SettingsData>>(StorageKeys.SETTINGS);
+			if (saved) merge(this.data, saved);
 		} catch (err) {
-			logger.warn("failed to load settings:", err);
+			logger.warn("Failed to load settings:", err);
 		}
 	}
 
-	// Persist in local storage.
-	async saveSettings() {
-		const rawData: SettingsData = {
-			global: $state.snapshot(this.global),
-			dashboard: $state.snapshot(this.dashboard)
-		};
-		await localforage.setItem(StorageKeys.SETTINGS, rawData);
-	}
+	saveSettings = debounce(async () => {
+		try {
+			await localforage.setItem(StorageKeys.SETTINGS, $state.snapshot(this.data));
+		} catch (err) {
+			logger.warn("Failed to save settings:", err);
+		}
+	}, 300);
 }
 
 export const settingsStore = new SettingsStore();

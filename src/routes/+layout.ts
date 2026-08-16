@@ -1,25 +1,28 @@
 import { doApiCall } from "$lib/core/api";
+import type { User } from "$lib/models/user";
+import { settingsStore } from "$lib/store/settings.svelte";
+import { userStore } from "$lib/store/user.svelte";
 import type { LayoutLoad } from "./$types";
 
 // This is SPA.
 export const ssr = false;
 
-type HomePageState = {
-	users: [];
-};
-
 export const load: LayoutLoad = async function ({ depends }) {
 	depends("user:all");
 
+	// Load settings
+	await settingsStore.loadSettings();
+
 	return {
 		users: await loadUsers()
-	} as HomePageState;
+	};
 };
 
 // fetch users
 async function loadUsers() {
-	const resp = await doApiCall("user/all");
+	const resp = await doApiCall<User[]>("user/all");
 	if (resp.success) {
+		await userStore.setUsers(resp.data);
 		return resp.data;
 	}
 	return [];

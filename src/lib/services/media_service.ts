@@ -44,7 +44,7 @@ export const useUserMediaList = (mediaType: MediaType, options: FetchUserMediaOp
 					sort: options.sort,
 					offset: pageParam
 				},
-				signal
+				{ signal }
 			);
 		},
 		initialPageParam: 0,

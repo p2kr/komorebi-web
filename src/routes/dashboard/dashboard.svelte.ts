@@ -1,9 +1,11 @@
+import type { MediaTitle } from "$lib/models/media";
+import { settingsStore, type SettingsData } from "$lib/store/settings.svelte";
 import {
 	FILTER_CONFIGS,
 	type FilterDefinition,
 	type FilterOption,
 	type MediaClientParams
-} from "./dashboard_filters";
+} from "./dashboard_config";
 
 class DashboardStore {
 	filters = $state<MediaClientParams>(
@@ -11,6 +13,10 @@ class DashboardStore {
 			FILTER_CONFIGS.map((cfg) => [cfg.key, cfg.defaultValue])
 		) as MediaClientParams
 	);
+
+	updateFilter(key: string, value: string | number | boolean | undefined) {
+		this.filters[key] = value;
+	}
 
 	get configs() {
 		return FILTER_CONFIGS;
@@ -43,3 +49,53 @@ class DashboardStore {
 }
 
 export const dashboardStore = new DashboardStore();
+
+function getTitle(
+	mediaTitle: MediaTitle,
+	title_pref: SettingsData["dashboard"]["title_pref"]
+): string {
+	const unknownTitle = "[UNKNOWN]";
+	switch (title_pref) {
+		case "english":
+			return (
+				mediaTitle.english ??
+				mediaTitle.romanized ??
+				mediaTitle.native ??
+				mediaTitle.user_preferred ??
+				unknownTitle
+			);
+		case "romanized":
+			return (
+				mediaTitle.romanized ??
+				mediaTitle.english ??
+				mediaTitle.native ??
+				mediaTitle.user_preferred ??
+				unknownTitle
+			);
+		case "native":
+			return (
+				mediaTitle.native ??
+				mediaTitle.english ??
+				mediaTitle.romanized ??
+				mediaTitle.user_preferred ??
+				unknownTitle
+			);
+		default:
+			return unknownTitle;
+	}
+}
+
+export function getPrimaryTitle(mediaTitle: MediaTitle): string {
+	return getTitle(mediaTitle, settingsStore.dashboard.title_pref);
+}
+
+export function getSecondaryTitle(mediaTitle: MediaTitle): string {
+	switch (settingsStore.dashboard.title_pref) {
+		case "english":
+			return getTitle(mediaTitle, "romanized");
+		case "romanized":
+			return getTitle(mediaTitle, "english");
+		case "native":
+			return getTitle(mediaTitle, "english");
+	}
+}
