@@ -103,7 +103,7 @@ export class MalOauthClient implements OauthClient {
 	}
 
 	async exchangeCodeForToken(code: string, code_verifier: string): Promise<string> {
-		const resp = await doApiCall<string>("oauth/exchange", {
+		const resp = await doApiCall<string>("user/oauth/exchange", {
 			provider: "MAL",
 			code,
 			code_verifier
@@ -112,6 +112,6 @@ export class MalOauthClient implements OauthClient {
 		if (resp.success) {
 			return resp.data;
 		}
-		throw new Error(resp.error.msg, { cause: resp.error.code });
+		throw new Error(resp.error, { cause: resp.description });
 	}
 }

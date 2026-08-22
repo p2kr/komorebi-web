@@ -16,11 +16,8 @@ export async function getDashboardItems(
 ): Promise<ApiResponse<PaginatedResponse>> {
 	if (!filters.media_type || !user_id) {
 		return {
-			success: false,
-			error: {
-				code: "MISSING_PARAMS",
-				msg: "media_type and user_id are required"
-			}
+			error: "MISSING_PARAMS",
+			description: "media_type and user_id are required"
 		} as FailureResponse;
 	}
 	const payload = {

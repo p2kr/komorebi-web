@@ -24,11 +24,8 @@ export async function addUser(formData: FormData): Promise<ApiResponse<User>> {
 			formData.set("access_token", accessToken);
 		} else {
 			return {
-				success: false,
-				error: {
-					code: "access_token_error",
-					msg: m.failed_to_exchange_token()
-				}
+				error: "access_token_error",
+				description: m.failed_to_exchange_token()
 			};
 		}
 

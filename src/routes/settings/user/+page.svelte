@@ -26,17 +26,22 @@
 	async function handleFormSubmit(e: SubmitEvent) {
 		e.preventDefault();
 		isDeleting = true;
-		const formData = new FormData(e.target as HTMLFormElement);
-		const resp = await deleteUser(formData);
-		if (resp.success) {
-			isDialogOpen = false;
-			userToDelete = undefined;
-			toast(m.user_deleted_successfully());
-		} else {
-			toastFailure(resp);
+		try {
+			const formData = new FormData(e.target as HTMLFormElement);
+			const resp = await deleteUser(formData);
+			if (resp.success) {
+				isDialogOpen = false;
+				userToDelete = undefined;
+				toast(m.user_deleted_successfully());
+			} else {
+				toastFailure(resp);
+			}
+			invalidate("user:all");
+		} catch (e) {
+			toastFailure(e as string);
+		} finally {
+			isDeleting = false;
 		}
-		invalidate("user:all");
-		isDeleting = false;
 	}
 </script>
 

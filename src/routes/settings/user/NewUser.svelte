@@ -14,6 +14,7 @@
 	import { toast } from "svelte-sonner";
 	import { addUser } from "$lib/services/user_service";
 	import { invalidate } from "$app/navigation";
+	import { Spinner } from "$lib/components/ui/spinner";
 
 	let isPanelOpen = $state(false);
 	let isLoading = $state(false);
@@ -36,18 +37,21 @@
 		const form = e.target as HTMLFormElement;
 
 		isLoading = true;
+		try {
+			const formData = new FormData(form);
 
-		const formData = new FormData(form);
-
-		const resp = await addUser(formData);
-		if (resp.success) {
-			invalidate("user:all");
-			toast(m.successfully_authenticated());
-		} else {
-			utils.toastFailure(resp);
+			const resp = await addUser(formData);
+			if (resp.success) {
+				invalidate("user:all");
+				toast(m.successfully_authenticated());
+			} else {
+				utils.toastFailure(resp);
+			}
+		} catch (e) {
+			utils.toastFailure(e as string);
+		} finally {
+			isLoading = false;
 		}
-
-		isLoading = false;
 	}
 </script>
 
@@ -138,7 +142,10 @@
 						</Table.Row>
 						<Table.Row>
 							<Table.Cell colspan={2}>
-								<Button type="submit" class="w-full">
+								<Button type="submit" class="w-full" disabled={isLoading}>
+									{#if isLoading}
+										<Spinner />
+									{/if}
 									{m.connect()}
 								</Button>
 							</Table.Cell>

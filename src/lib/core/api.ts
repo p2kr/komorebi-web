@@ -8,11 +8,10 @@ export type SuccessResponse<T> = {
 };
 
 export type FailureResponse = {
-	success: false;
-	error: {
-		code: string;
-		msg: string;
-	};
+	success?: false;
+	error?: string;
+	description?: string;
+	errors?: unknown;
 };
 
 export type ApiResponse<T> = SuccessResponse<T> | FailureResponse;
@@ -37,11 +36,8 @@ export async function doApiCall<T>(
 		return resp;
 	} catch (e) {
 		return {
-			success: false,
-			error: {
-				code: e instanceof Error && e.cause ? String(e.cause) : "ERROR",
-				msg: e instanceof Error ? e.message : String(e)
-			}
+			error: "error occurred in " + endpoint,
+			description: e instanceof Error ? e.message : String(e)
 		} satisfies FailureResponse;
 	}
 }

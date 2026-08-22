@@ -12,16 +12,24 @@ export async function formToPayloadAsync(formData: Promise<FormData>) {
 	return formToPayload(await formData);
 }
 
-export function toastFailure(resp: FailureResponse | string) {
-	if (resp != null && typeof resp === "object" && resp.error) {
-		toast(resp.error.code, {
-			description: resp.error.msg
-		});
-	} else {
+export function toastFailure(resp: FailureResponse | string | Error) {
+	if (typeof resp === "string") {
 		toast(m.error(), {
 			description: String(resp)
 		});
+		return;
 	}
+
+	if (resp instanceof Error) {
+		toast(m.error(), {
+			description: resp.message + "->\n" + (resp.cause || "")
+		});
+		return;
+	}
+
+	toast(resp.error || m.error(), {
+		description: resp.description
+	});
 }
 
 // Quick string hash to turn any URL/ID into a stable, unique number
