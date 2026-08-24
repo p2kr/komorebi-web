@@ -12,7 +12,7 @@
 	import { Spinner } from "$lib/components/ui/spinner";
 	import ResultTiles from "./ResultTiles.svelte";
 	import CustomEmpty from "$lib/components/custom/CustomEmpty.svelte";
-	import { Search, SearchX } from "@lucide/svelte";
+	import { CircleX, Search, SearchX } from "@lucide/svelte";
 	import { Separator } from "$lib/components/ui/separator";
 	import { isNotNil } from "es-toolkit";
 
@@ -35,7 +35,7 @@
 		queryFn: async ({ signal }) => {
 			fetchedQuery.delete(mediaType);
 			const [res, duration] = await search(query, mediaType, signal);
-			fetchedQuery.set(mediaType, { query, duration });
+			if (res.success) fetchedQuery.set(mediaType, { query, duration });
 			return res;
 		},
 		enabled: false
@@ -46,7 +46,7 @@
 	const isFetchReady = $derived(query.trim().length > 0 && mediaType && !resp.isFetching);
 </script>
 
-<form class="rounded border p-1">
+<form class="rounded border p-1" method="post" onsubmit={(e) => e.preventDefault()}>
 	<div class="mb-1 flex items-center gap-1 text-lg">
 		<span>Search for</span>
 		<Tabs.Root bind:value={mediaType} disabled={resp.isFetching}>
@@ -108,6 +108,7 @@
 		<CustomEmpty Icon={SearchX} title="No Results" desc="Try again with different query" />
 	{:else if resp.data && !resp.data?.success}
 		{toastFailure(resp.data)}
+		<CustomEmpty Icon={CircleX} title="Some error occurred" desc="Please try again" />
 	{:else if !resp.isFetching}
 		<CustomEmpty Icon={Search} title="Search something" desc="" />
 	{/if}

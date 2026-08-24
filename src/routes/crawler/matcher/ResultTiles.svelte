@@ -3,7 +3,7 @@
 	import { logger } from "$lib/core/telemetry";
 	import type { CrawlerResult } from "$lib/models/crawler";
 	import type { MediaType } from "$lib/models/media";
-	import { Code, Download, TrendingUp } from "@lucide/svelte";
+	import { Download, Globe, TrendingUp } from "@lucide/svelte";
 	import { isNil } from "es-toolkit";
 	import type { Component } from "svelte";
 	import { VList } from "virtua/svelte";
@@ -70,7 +70,7 @@
 							{item.parsed_title.title}
 						</div>
 						<div class="flex gap-1 text-sm text-muted-foreground">
-							{@render tags(item.source, Code)}
+							{@render tags(item.source, Globe)}
 							{@render tags(item.popularity, TrendingUp)}
 						</div>
 					</div>
