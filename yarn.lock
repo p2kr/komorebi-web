@@ -2708,6 +2708,7 @@ __metadata:
     prettier-plugin-organize-imports: "npm:^4.3.0"
     prettier-plugin-svelte: "npm:^4.1.0"
     prettier-plugin-tailwindcss: "npm:^0.8.0"
+    pretty-ms: "npm:^9.3.0"
     shadcn-svelte: "npm:^1.5.0"
     svelte: "npm:^5.56.1"
     svelte-check: "npm:^4.6.0"
@@ -3325,6 +3326,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"parse-ms@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "parse-ms@npm:4.0.0"
+  checksum: 10c0/a7900f4f1ebac24cbf5e9708c16fb2fd482517fad353aecd7aefb8c2ba2f85ce017913ccb8925d231770404780df46244ea6fec598b3bde6490882358b4d2d16
+  languageName: node
+  linkType: hard
+
 "path-exists@npm:^4.0.0":
   version: 4.0.0
   resolution: "path-exists@npm:4.0.0"
@@ -3553,6 +3561,15 @@ __metadata:
   bin:
     prettier: bin/prettier.cjs
   checksum: 10c0/9f7ddae234035868f3daab3dc34e6de7e54622185afb017378029f0c09a9c023248ccf6f34def0b17a0538e18c47aa1b3188bab72965d1bf735919baa0747e99
+  languageName: node
+  linkType: hard
+
+"pretty-ms@npm:^9.3.0":
+  version: 9.3.0
+  resolution: "pretty-ms@npm:9.3.0"
+  dependencies:
+    parse-ms: "npm:^4.0.0"
+  checksum: 10c0/555ea39a1de48a30601938aedb76d682871d33b6dee015281c37108921514b11e1792928b1648c2e5589acc73c8ef0fb5e585fb4c718e340a28b86799e90fb34
   languageName: node
   linkType: hard
 

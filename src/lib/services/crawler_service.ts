@@ -2,8 +2,10 @@ import { doApiCall } from "$lib/core/api";
 import { logger } from "$lib/core/telemetry";
 import type { CrawlerResult } from "$lib/models/crawler";
 import type { MediaType } from "$lib/models/media";
+import pms from "pretty-ms";
 
 export async function search(query: string, media_type: MediaType, signal: AbortSignal) {
+	const start = performance.now();
 	const resp = await doApiCall<CrawlerResult[]>(
 		"crawler/search",
 		{
@@ -26,5 +28,5 @@ export async function search(query: string, media_type: MediaType, signal: Abort
 		media_type
 	);
 
-	return resp;
+	return [resp, pms(performance.now() - start)] as const;
 }

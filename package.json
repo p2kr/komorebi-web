@@ -75,6 +75,7 @@
 		"ky": "^2.0.2",
 		"localforage": "^1.10.0",
 		"lru-cache": "^11.5.2",
+		"pretty-ms": "^9.3.0",
 		"type-fest": "^5.8.0",
 		"uuid": "^14.0.1",
 		"virtua": "^0.50.4"

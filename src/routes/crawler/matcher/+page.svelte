@@ -14,6 +14,9 @@
 	import CustomEmpty from "$lib/components/custom/CustomEmpty.svelte";
 	import { Search, SearchX } from "@lucide/svelte";
 	import { Separator } from "$lib/components/ui/separator";
+	import { isNotNil } from "es-toolkit";
+
+	import { SvelteMap } from "svelte/reactivity";
 
 	const { mediaEntry }: { mediaEntry?: MediaEntry } = page.state;
 
@@ -23,13 +26,17 @@
 		: "";
 	let query = $state<string>(primaryTitle);
 
-	let fetchedQuery = $state<string>();
+	const fetchedQuery = new SvelteMap<MediaType, { query: string; duration: string }>();
+	let lastFetchedQuery = $derived(fetchedQuery.get(mediaType)?.query);
+	let lastFetchedDuration = $derived(fetchedQuery.get(mediaType)?.duration);
 
 	const resp = createQuery(() => ({
 		queryKey: ["crawler-search-query", mediaType],
 		queryFn: async ({ signal }) => {
-			fetchedQuery = query;
-			return await search(query, mediaType, signal);
+			fetchedQuery.delete(mediaType);
+			const [res, duration] = await search(query, mediaType, signal);
+			fetchedQuery.set(mediaType, { query, duration });
+			return res;
 		},
 		enabled: false
 	}));
@@ -39,11 +46,10 @@
 	const isFetchReady = $derived(query.trim().length > 0 && mediaType && !resp.isFetching);
 </script>
 
-<!-- <div class="flex flex-col"> -->
 <form class="rounded border p-1">
 	<div class="mb-1 flex items-center gap-1 text-lg">
 		<span>Search for</span>
-		<Tabs.Root bind:value={mediaType}>
+		<Tabs.Root bind:value={mediaType} disabled={resp.isFetching}>
 			<Tabs.List>
 				<Tabs.Trigger value="Anime">Anime</Tabs.Trigger>
 				<Tabs.Trigger value="Manga">Manga</Tabs.Trigger>
@@ -88,8 +94,9 @@
 <div class="mt-2 h-full rounded border p-1">
 	<div class="text-lg">
 		<span>Ranked Scraping Results</span>
-		{#if resp.isFetched}
-			for <em>{fetchedQuery}</em>
+		{#if resp.isFetched && isNotNil(lastFetchedQuery) && isNotNil(lastFetchedDuration)}
+			for <code class="text-base text-muted-foreground">{lastFetchedQuery}</code>
+			in <code class="text-base text-muted-foreground">{lastFetchedDuration}</code>
 		{/if}
 	</div>
 	<Separator />
@@ -105,4 +112,3 @@
 		<CustomEmpty Icon={Search} title="Search something" desc="" />
 	{/if}
 </div>
-<!-- </div> -->
