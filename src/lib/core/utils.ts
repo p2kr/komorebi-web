@@ -1,5 +1,7 @@
 import type { FailureResponse } from "$lib/core/api";
+import type { MediaTitle } from "$lib/models/media";
 import { m } from "$lib/paraglide/messages";
+import type { SettingsData } from "$lib/store/settings.svelte";
 import DOMPurify from "dompurify";
 import { LRUCache } from "lru-cache/raw";
 import { toast } from "svelte-sonner";
@@ -57,4 +59,39 @@ export function cleanSynopsis(key: string, synopsis: string | null | undefined):
 // TODO: Replace with faster regex.
 function sanitize(text: string): string {
 	return DOMPurify.sanitize(text);
+}
+
+export function getTitle(
+	mediaTitle: MediaTitle,
+	title_pref: SettingsData["dashboard"]["title_pref"]
+): string {
+	const unknownTitle = "[UNKNOWN]";
+	switch (title_pref) {
+		case "english":
+			return (
+				mediaTitle.english ||
+				mediaTitle.romanized ||
+				mediaTitle.native ||
+				mediaTitle.user_preferred ||
+				unknownTitle
+			);
+		case "romanized":
+			return (
+				mediaTitle.romanized ||
+				mediaTitle.english ||
+				mediaTitle.native ||
+				mediaTitle.user_preferred ||
+				unknownTitle
+			);
+		case "native":
+			return (
+				mediaTitle.native ||
+				mediaTitle.english ||
+				mediaTitle.romanized ||
+				mediaTitle.user_preferred ||
+				unknownTitle
+			);
+		default:
+			return unknownTitle;
+	}
 }

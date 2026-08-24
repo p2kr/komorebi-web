@@ -12,8 +12,8 @@
 		"prepare": "husky",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"lint": "tsc --noEmit && prettier --check . && eslint .",
-		"format": "prettier --write .",
+		"lint": "eslint . && yarn run check && prettier --check .",
+		"format": "eslint . --fix ; prettier --write .",
 		"test": "vitest --run",
 		"test:ui": "vitest --ui"
 	},
@@ -76,7 +76,8 @@
 		"localforage": "^1.10.0",
 		"lru-cache": "^11.5.2",
 		"type-fest": "^5.8.0",
-		"uuid": "^14.0.1"
+		"uuid": "^14.0.1",
+		"virtua": "^0.50.4"
 	},
 	"lint-staged": {
 		"**/*": [

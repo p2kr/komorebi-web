@@ -1,19 +1,17 @@
 <script lang="ts">
-	import * as Empty from "$lib/components/ui/empty";
 	import { CircleX, SearchX, Settings2, UserRoundX } from "@lucide/svelte";
 	import DashboadTile from "./DashboadTile.svelte";
 	import Filters from "./Filters.svelte";
-	import type { FailureResponse } from "$lib/core/api";
 	import { userStore } from "$lib/store/user.svelte";
 	import { m } from "$lib/paraglide/messages";
 	import { Button } from "$lib/components/ui/button";
-	import type { Component, Snippet } from "svelte";
 	import { goto } from "$app/navigation";
 	import { resolve } from "$app/paths";
 	import { Spinner } from "$lib/components/ui/spinner";
 	import { getDashboardItems } from "./dashboard_service";
 	import { createQuery } from "@tanstack/svelte-query";
 	import { dashboardStore } from "./dashboard.svelte";
+	import CustomEmpty from "$lib/components/custom/CustomEmpty.svelte";
 
 	const itemsQuery = createQuery(() => ({
 		queryKey: ["getDashboardItems-query", userStore.currentUser?.id, dashboardStore.filters],
@@ -25,37 +23,8 @@
 
 <Filters />
 
-{#snippet errorBoundary(
-	Icon: Component,
-	title: string,
-	desc: string | FailureResponse,
-	content?: Snippet
-)}
-	<Empty.Root>
-		<Empty.Header>
-			<Empty.Media variant="icon">
-				<Icon />
-			</Empty.Media>
-			<Empty.Title>{title}</Empty.Title>
-			<Empty.Description>
-				{#if typeof desc === "object"}
-					<div>{desc.error.code}</div>
-					<div>{desc.error.msg}</div>
-				{:else}
-					<div>{desc}</div>
-				{/if}
-			</Empty.Description>
-			{#if content}
-				<Empty.Content>
-					{@render content()}
-				</Empty.Content>
-			{/if}
-		</Empty.Header>
-	</Empty.Root>
-{/snippet}
-
 {#if itemsQuery.isLoading}
-	{@render errorBoundary(Spinner, "", "")}
+	<CustomEmpty Icon={Spinner} desc="" title="" />
 {:else if resp}
 	{#if resp.success}
 		{#if resp.data.data.length > 0}
@@ -65,14 +34,14 @@
 				{/each}
 			</div>
 		{:else}
-			{@render errorBoundary(
-				SearchX,
-				"No results found",
-				"Try adjusting your filters to find what you're looking for, or refresh the page."
-			)}
+			<CustomEmpty
+				Icon={SearchX}
+				title="No results found"
+				desc="Try adjusting your filters to find what you're looking for, or refresh the page."
+			/>
 		{/if}
 	{:else if userStore.currentUser}
-		{@render errorBoundary(CircleX, "Some technical error occurred", resp)}
+		<CustomEmpty Icon={CircleX} title="Some technical error occurred" desc={resp} />
 	{:else}
 		{#snippet navigateBtn()}
 			<Button
@@ -85,11 +54,11 @@
 				<span>Open user settings</span>
 			</Button>
 		{/snippet}
-		{@render errorBoundary(
-			UserRoundX,
-			m.no_user_configured(),
-			"Please configure user in settings",
-			navigateBtn
-		)}
+		<CustomEmpty
+			Icon={UserRoundX}
+			title={m.no_user_configured()}
+			desc="Please configure user in settings"
+			content={navigateBtn}
+		/>
 	{/if}
 {/if}

@@ -159,6 +159,7 @@
 		<Dialog.Trigger class="min-w-0 p-1 text-left">
 			<p
 				class="line-clamp-3 cursor-pointer text-justify text-xs leading-relaxed text-muted-foreground transition-colors hover:text-foreground"
+				aria-hidden="true"
 			>
 				{synopsis}
 			</p>

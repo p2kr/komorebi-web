@@ -1,5 +1,6 @@
+import { getTitle } from "$lib/core/utils";
 import type { MediaTitle } from "$lib/models/media";
-import { settingsStore, type SettingsData } from "$lib/store/settings.svelte";
+import { settingsStore } from "$lib/store/settings.svelte";
 import {
 	FILTER_CONFIGS,
 	type FilterDefinition,
@@ -49,41 +50,6 @@ class DashboardStore {
 }
 
 export const dashboardStore = new DashboardStore();
-
-function getTitle(
-	mediaTitle: MediaTitle,
-	title_pref: SettingsData["dashboard"]["title_pref"]
-): string {
-	const unknownTitle = "[UNKNOWN]";
-	switch (title_pref) {
-		case "english":
-			return (
-				mediaTitle.english ||
-				mediaTitle.romanized ||
-				mediaTitle.native ||
-				mediaTitle.user_preferred ||
-				unknownTitle
-			);
-		case "romanized":
-			return (
-				mediaTitle.romanized ||
-				mediaTitle.english ||
-				mediaTitle.native ||
-				mediaTitle.user_preferred ||
-				unknownTitle
-			);
-		case "native":
-			return (
-				mediaTitle.native ||
-				mediaTitle.english ||
-				mediaTitle.romanized ||
-				mediaTitle.user_preferred ||
-				unknownTitle
-			);
-		default:
-			return unknownTitle;
-	}
-}
 
 export function getPrimaryTitle(mediaTitle: MediaTitle): string {
 	return getTitle(mediaTitle, settingsStore.dashboard.title_pref);

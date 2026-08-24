@@ -2,7 +2,7 @@
 	import * as Field from "$lib/components/ui/field";
 	import Item from "$lib/components/ui/item/item.svelte";
 	import * as Select from "$lib/components/ui/select";
-	import type { FilterDefinition } from "./dashboard_filters";
+	import type { FilterDefinition } from "./dashboard_config";
 	import { logger } from "$lib/core/telemetry";
 	import { dashboardStore } from "./dashboard.svelte";
 

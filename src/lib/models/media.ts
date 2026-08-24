@@ -1,6 +1,6 @@
 export type MediaProvider = "MAL" | "ANILIST";
 
-export type MediaType = "Anime" | "Manga";
+export type MediaType = "Anime" | "Manga" | "Novel";
 
 export type MediaFormat =
 	| "Unknown"

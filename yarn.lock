@@ -2722,6 +2722,7 @@ __metadata:
     typescript-eslint: "npm:^8.60.1"
     uuid: "npm:^14.0.1"
     vaul-svelte: "npm:^1.0.0-next.7"
+    virtua: "npm:^0.50.4"
     vite: "npm:^8.0.16"
     vitest: "npm:^4.1.8"
     vitest-browser-svelte: "npm:^2.1.1"
@@ -4407,6 +4408,36 @@ __metadata:
   peerDependencies:
     svelte: ^5.0.0
   checksum: 10c0/7a459122b39c9ef6bd830b525d5f6acbc07575491e05c758d9dfdb993cc98ab4dee4a9c022e475760faaf1d7bd8460a1434965431d36885a3ee48315ffa54eb3
+  languageName: node
+  linkType: hard
+
+"virtua@npm:^0.50.4":
+  version: 0.50.4
+  resolution: "virtua@npm:0.50.4"
+  peerDependencies:
+    "@angular/common": ">=20.0.0"
+    "@angular/core": ">=20.0.0"
+    react: ">=16.14.0"
+    react-dom: ">=16.14.0"
+    solid-js: ">=1.0"
+    svelte: ">=5.0"
+    vue: ">=3.2"
+  peerDependenciesMeta:
+    "@angular/common":
+      optional: true
+    "@angular/core":
+      optional: true
+    react:
+      optional: true
+    react-dom:
+      optional: true
+    solid-js:
+      optional: true
+    svelte:
+      optional: true
+    vue:
+      optional: true
+  checksum: 10c0/f3eb80703e80c01d520ac766ed99a77e7cfcbe6e1dab2ae91ceef0dbed63b65f820900fd3ba136dd517fc5b456561e75541b56d6ffe5d98523d1308543b1935f
   languageName: node
   linkType: hard
 
