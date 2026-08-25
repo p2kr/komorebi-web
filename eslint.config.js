@@ -47,6 +47,17 @@ export default defineConfig(
 						imports: true
 					}
 				}
+			],
+			"@typescript-eslint/no-restricted-imports": [
+				"error",
+				{
+					patterns: [
+						{
+							group: ["**/models/bindings/*", "../**/bindings/*"],
+							message: "Please re-export types in models folder and use them"
+						}
+					]
+				}
 			]
 		}
 	}

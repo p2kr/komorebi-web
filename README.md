@@ -61,7 +61,7 @@ Configure environment variables in a `.env` file:
 
 ```env
 # URL pointing to the komorebi-server API (leave blank when served by the backend)
-PUBLIC_API_URL=http://127.0.0.1:8080/api/v1
+PUBLIC_API_URL=http://127.0.0.1:5150/api/v1
 
 # OAuth Client IDs for web-based authorization
 PUBLIC_MAL_CLIENT_ID=your_mal_client_id
@@ -72,13 +72,23 @@ PUBLIC_ANILIST_CLIENT_ID=your_anilist_client_id
 
 ## Development & Build Commands
 
-### Install Dependencies
+### 1. Generate TypeScript Bindings (Prerequisite)
+
+Before running type checking or building, generate the TypeScript bindings from `komorebi-server`:
 
 ```bash
+cd ../komorebi-server
+cargo ts-rs
+```
+
+### 2. Install Dependencies
+
+```bash
+cd komorebi-web
 yarn install
 ```
 
-### Start Development Server
+### 3. Start Development Server
 
 ```bash
 yarn dev

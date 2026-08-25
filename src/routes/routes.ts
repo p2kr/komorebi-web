@@ -1,7 +1,7 @@
 import { m } from "$lib/paraglide/messages";
 import { Blocks, Flame, Globe, House, Vault, WandSparkles } from "@lucide/svelte";
 
-export const appRoutes = Object.freeze({
+export const navMenuRoutes = Object.freeze({
 	"/dashboard": {
 		label: m.dashboard(),
 		icon: House

@@ -26,3 +26,5 @@ vite.config.ts.timestamp-*
 .yarn/
 .agents/
 repomix-output.xml
+src/lib/models/bindings/*
+!src/lib/models/bindings/readme.md

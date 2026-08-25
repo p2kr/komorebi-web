@@ -5,12 +5,12 @@
 	import { SidebarTrigger } from "$lib/components/ui/sidebar";
 	import { Constants } from "$lib/core/constants";
 	import { Eye, EyeOff } from "@lucide/svelte";
-	import { appRoutes } from "./routes";
+	import { navMenuRoutes } from "./routes";
 	import { settingsStore } from "$lib/store/settings.svelte";
 	import SimpleTooltip from "$lib/components/custom/SimpleTooltip.svelte";
 
 	// @ts-expect-error "/" is not declared in appRoutes
-	const currentPageLabel = appRoutes[page.url.pathname]?.label;
+	const currentPageLabel = $derived(navMenuRoutes[page.url.pathname]?.label);
 
 	const isCensorEnabled = $derived(settingsStore.global.censor.enabled);
 </script>

@@ -49,7 +49,7 @@
 	}
 </script>
 
-{#snippet tags(text: string | undefined, Icon: Component)}
+{#snippet tags(text: string | undefined | null, Icon: Component)}
 	{#if text}
 		<div class="flex items-center gap-1 rounded border px-0.5">
 			<Icon class="size-(--text-xs)" />

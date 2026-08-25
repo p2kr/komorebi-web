@@ -3,7 +3,7 @@
 	import { resolve } from "$app/paths";
 	import * as Sidebar from "$lib/components/ui/sidebar";
 	import { Settings } from "@lucide/svelte";
-	import { appRoutes } from "./routes";
+	import { navMenuRoutes } from "./routes";
 	import type { Entries } from "type-fest";
 	import UserManagement from "./UserManagement.svelte";
 	import { m } from "$lib/paraglide/messages";
@@ -15,7 +15,7 @@
 <!-- Using ml-2 because icons were not centered when collapsed. -->
 <Sidebar.Content class="ml-2">
 	<Sidebar.Menu>
-		{const routes = Object.entries(appRoutes) as Entries<typeof appRoutes>}
+		{const routes = Object.entries(navMenuRoutes) as Entries<typeof navMenuRoutes>}
 		{#each routes as [routeKey, routeDetails] (routeKey)}
 			<Sidebar.MenuItem>
 				<Sidebar.MenuButton
