@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { Button } from "$lib/components/ui/button";
 	import { logger } from "$lib/core/telemetry";
+	import { getTitlePrefix } from "$lib/core/utils";
 	import type { CrawlerResult } from "$lib/models/crawler";
 	import type { MediaType } from "$lib/models/media";
 	import { Download, Globe, TrendingUp } from "@lucide/svelte";
-	import { isNil } from "es-toolkit";
 	import type { Component } from "svelte";
 	import { VList } from "virtua/svelte";
 
@@ -26,27 +26,6 @@
 
 		logger.debug(ref, rect, distFromTop);
 	});
-
-	function getPrefix(item: CrawlerResult) {
-		let prefix1 = "";
-		let prefix2 = "";
-		switch (mediaType) {
-			case "Anime":
-				prefix1 = "S";
-				prefix2 = "E";
-				break;
-			case "Manga":
-			case "Novel":
-				prefix1 = "V";
-				prefix2 = "C";
-				break;
-		}
-
-		const s = item.parsed_title.season[0];
-		const e = item.parsed_title.episode[0];
-
-		return [prefix1 + (isNil(s) ? "?" : s), prefix2 + (isNil(e) ? "?" : e)];
-	}
 </script>
 
 {#snippet tags(text: string | undefined | null, Icon: Component)}
@@ -66,7 +45,9 @@
 					<div>
 						<div class="line-clamp-1">{item.title}</div>
 						<div class="line-clamp-1 text-sm">
-							{getPrefix(item).join(" : ")}
+							{getTitlePrefix(item.parsed_title.season, item.parsed_title.episode, mediaType).join(
+								" : "
+							)}
 							{item.parsed_title.title}
 						</div>
 						<div class="flex gap-1 text-sm text-muted-foreground">

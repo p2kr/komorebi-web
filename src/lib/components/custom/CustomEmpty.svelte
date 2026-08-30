@@ -2,18 +2,20 @@
 	import type { FailureResponse } from "$lib/core/api";
 	import type { Component, Snippet } from "svelte";
 	import * as Empty from "$lib/components/ui/empty";
+	import type { ClassValue } from "svelte/elements";
 
 	interface Props {
 		Icon: Component;
 		title: string;
 		desc: string | FailureResponse;
 		content?: Snippet;
+		class?: ClassValue;
 	}
 
-	const { Icon, title, desc, content }: Props = $props();
+	const { Icon, title, desc, content, class: className }: Props = $props();
 </script>
 
-<Empty.Root>
+<Empty.Root class={className}>
 	<Empty.Header>
 		<Empty.Media variant="icon">
 			<Icon />

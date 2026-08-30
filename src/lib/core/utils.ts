@@ -1,8 +1,9 @@
 import type { FailureResponse } from "$lib/core/api";
-import type { MediaTitle } from "$lib/models/media";
+import type { MediaTitle, MediaType } from "$lib/models/media";
 import { m } from "$lib/paraglide/messages";
 import type { SettingsData } from "$lib/store/settings.svelte";
 import DOMPurify from "dompurify";
+import { isNil, isString } from "es-toolkit";
 import { LRUCache } from "lru-cache/raw";
 import { toast } from "svelte-sonner";
 
@@ -94,4 +95,33 @@ export function getTitle(
 		default:
 			return unknownTitle;
 	}
+}
+
+export function getTitlePrefix(
+	season: string | string[] | null = "?",
+	episode: string | string[] | null = "?",
+	mediaType: MediaType | null = "Anime"
+) {
+	season = season || "?";
+	episode = episode || "?";
+	mediaType = mediaType || "Anime";
+
+	let prefix1 = "";
+	let prefix2 = "";
+	switch (mediaType) {
+		case "Anime":
+			prefix1 = "S";
+			prefix2 = "E";
+			break;
+		case "Manga":
+		case "Novel":
+			prefix1 = "V";
+			prefix2 = "C";
+			break;
+	}
+
+	const s = isString(season) ? season : season[0];
+	const e = isString(episode) ? episode : episode[0];
+
+	return [prefix1 + (isNil(s) ? "?" : s), prefix2 + (isNil(e) ? "?" : e)];
 }
