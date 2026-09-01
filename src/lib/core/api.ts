@@ -16,9 +16,9 @@ export type FailureResponse = {
 
 export type ApiResponse<T> = SuccessResponse<T> | FailureResponse;
 
-export async function doApiCall<T>(
+export async function doApiCall<T, U = unknown>(
 	endpoint: string,
-	json?: unknown,
+	json?: U,
 	options?: Options
 ): Promise<ApiResponse<T>> {
 	try {
@@ -47,9 +47,9 @@ const apiCache: Record<string, AbortController> = {};
 /**
  * By default, the cache key is the `endpoint`. Pass `cacheKey` in `options` to override.
  */
-export async function doLatestApiCall<T>(
+export async function doLatestApiCall<T, U = unknown>(
 	endpoint: string,
-	json?: unknown,
+	json?: U,
 	options?: Options & { cacheKey?: string }
 ): Promise<ApiResponse<T>> {
 	// Differentiate requests. Allow a custom key (e.g., endpoint + method)
@@ -65,7 +65,7 @@ export async function doLatestApiCall<T>(
 
 	try {
 		// Await the API call so we can hook into the 'finally' block
-		return await doApiCall<T>(endpoint, json, {
+		return await doApiCall<T, U>(endpoint, json, {
 			...options,
 			signal: controller.signal
 		});

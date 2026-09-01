@@ -38,6 +38,7 @@
 			if (res.success) fetchedQuery.set(mediaType, { query, duration });
 			return res;
 		},
+		staleTime: Infinity,
 		enabled: false
 	}));
 

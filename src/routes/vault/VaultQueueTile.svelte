@@ -1,44 +1,35 @@
 <script lang="ts">
-	import { Constants } from "$lib/core/constants";
-	import { getTitlePrefix } from "$lib/core/utils";
-	import type { VaultItem } from "$lib/models/vault";
+	import { getTitlePrefix, toastFailure } from "$lib/core/utils";
+	import type { VaultActionPayload, VaultItem } from "$lib/models/vault";
 	import * as Accordion from "$lib/components/ui/accordion/";
 	import pms from "pretty-ms";
 	import CustomEmpty from "$lib/components/custom/CustomEmpty.svelte";
-	import { CheckLine, Gauge, Pause, StepForward, X } from "@lucide/svelte";
-	import { WebSocket } from "partysocket";
-	import { logger } from "$lib/core/telemetry";
+	import { CheckLine, CircleSlash, Gauge, Pause, StepForward, X } from "@lucide/svelte";
 	import * as Item from "$lib/components/ui/item";
 	import { Button } from "$lib/components/ui/button";
 	import prettyBytes from "pretty-bytes";
 	import { Virtualizer } from "virtua/svelte";
+	import { doApiCall } from "$lib/core/api";
+	import { vaultStore } from "$lib/store/vault.svelte";
+	import { handleDelete } from "./vault";
 
-	let queueItems = $state<VaultItem[]>([]);
+	let queueItems = $derived(vaultStore.vaultItems.filter((v) => v.status !== "COMPLETED"));
 
-	$effect(() => {
-		// let origin = globalThis.location.origin;
-		// const protocol = globalThis.location.protocol;
-		// origin = origin.replace(protocol, protocol == "http" ? "ws" : "wss");
-		const ws = new WebSocket(Constants.BASE_API + "/vault/ws", undefined, {
-			minReconnectionDelay: 1_000, // Start retrying after 1s
-			maxReconnectionDelay: 10_000, // Cap retry interval at 10s
-			reconnectionDelayGrowFactor: 1.5, // Exponential backoff multiplier
-			maxRetries: Infinity // Keep retrying until server comes back
+	async function handlePauseResume(e: EventTarget | null, item: VaultItem) {
+		const btn = e as HTMLButtonElement;
+		btn.setAttribute("disabled", "true");
+		const endpoint =
+			item.status == "DOWNLOADING" || item.status == "PENDING" ? "vault/pause" : "vault/resume";
+
+		const resp = await doApiCall<unknown, VaultActionPayload>(endpoint, {
+			vault_id: item.id
 		});
 
-		ws.onmessage = (event) => {
-			try {
-				queueItems = JSON.parse(event.data) as VaultItem[];
-				// queueItems = [...queueItems, ...faker.helpers.multiple(dummyQueueData, { count: 1 })]; // DEBUG!
-			} catch (e) {
-				logger.error("Failed to parse ws message", e);
-			}
-		};
-
-		return () => {
-			ws.close();
-		};
-	});
+		if (!resp.success) {
+			toastFailure(resp);
+		}
+		btn.setAttribute("disabled", "false");
+	}
 </script>
 
 <div class="queue-tile rounded border">
@@ -70,9 +61,14 @@
 									</Item.Title>
 									<Item.Description>
 										<div class="line-clamp-1">{item.raw_title}</div>
-										<div>
-											<Gauge class="inline size-4" />
-											<span>{prettyBytes(item.speed_bps)}/s</span>
+										<div class="flex items-center gap-1">
+											{#if item.status == "DOWNLOADING"}
+												<Gauge class="inline size-3" />
+												<span>{prettyBytes(item.speed_bps)}/s</span>
+											{:else}
+												<CircleSlash class="inline size-3" />
+												{item.status}
+											{/if}
 											&middot;
 											<span>{progress}</span>
 											&middot;
@@ -84,6 +80,7 @@
 									<Button
 										variant="secondary"
 										disabled={item.status == "PENDING" || item.status == "COMPLETED"}
+										onclick={(e) => handlePauseResume(e.target, item)}
 									>
 										{#if item.status == "DOWNLOADING" || item.status == "PENDING"}
 											<Pause />
@@ -91,7 +88,7 @@
 											<StepForward />
 										{/if}
 									</Button>
-									<Button variant="destructive">
+									<Button variant="destructive" onclick={() => handleDelete(item)}>
 										<X />
 									</Button>
 								</Item.Actions>

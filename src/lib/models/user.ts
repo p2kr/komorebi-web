@@ -1,1 +1,1 @@
-export type { User } from "./bindings/User";
+export * from "./bindings/User";

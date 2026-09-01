@@ -2,23 +2,15 @@
 	import CustomEmpty from "$lib/components/custom/CustomEmpty.svelte";
 	import * as Item from "$lib/components/ui/item";
 	import { Spinner } from "$lib/components/ui/spinner";
-	import { doApiCall } from "$lib/core/api";
 	import { getTitlePrefix } from "$lib/core/utils";
-	import type { VaultItem } from "$lib/models/vault";
 	import { Book, FileQuestionMark, Image, Play, SearchX, Video, X } from "@lucide/svelte";
-	import { createQuery } from "@tanstack/svelte-query";
 	import { Virtualizer } from "virtua/svelte";
 	import prettyBytes from "pretty-bytes";
 	import { Button } from "$lib/components/ui/button";
 	import type { MediaType } from "$lib/models/media";
-	import type { Component } from "svelte";
-
-	const query = createQuery(() => ({
-		queryKey: ["vault/all"],
-		queryFn: async function () {
-			return doApiCall<VaultItem[]>("vault/all");
-		}
-	}));
+	import { type Component } from "svelte";
+	import { vaultStore } from "$lib/store/vault.svelte";
+	import { handleDelete } from "./vault";
 
 	function getMediaTypeIcon(mediaType: MediaType | null): Component {
 		switch (mediaType) {
@@ -32,18 +24,20 @@
 				return FileQuestionMark;
 		}
 	}
+
+	const completedItems = $derived(vaultStore.vaultItems.filter((v) => v.status === "COMPLETED"));
 </script>
 
 <div class="mt-2 rounded border p-1">
 	<div class="text-lg font-medium">Vault</div>
-	{#if query.isFetching}
+	{#if !vaultStore.isConnected}
 		<CustomEmpty Icon={Spinner} title="Loading vault items" desc="" />
-	{:else if query.data?.success}
-		{#if query.data.data.length == 0}
+	{:else}
+		{#if !completedItems || completedItems.length == 0}
 			<CustomEmpty Icon={SearchX} title="Vault Empty" desc="No downloaded media" />
 		{:else}
 			<div class="h-full">
-				<Virtualizer data={query.data.data} getKey={(q) => q.id}>
+				<Virtualizer data={completedItems} getKey={(q) => q.id}>
 					{#snippet children(item)}
 						<Item.Root variant="outline" class="my-0.5">
 							<Item.Media class="self-center!">
@@ -64,7 +58,7 @@
 								<Button variant="outline">
 									<Play />
 								</Button>
-								<Button variant="destructive">
+								<Button variant="destructive" onclick={() => handleDelete(item)}>
 									<X />
 								</Button>
 							</Item.Actions>

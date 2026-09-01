@@ -54,7 +54,7 @@ export default defineConfig({
 	},
 	server: {
 		proxy: {
-			"/api": { target: "http://localhost:5150", changeOrigin: true, ws: true }
+			"/api": { target: "http://localhost:5150", changeOrigin: true }
 		}
 	}
 });

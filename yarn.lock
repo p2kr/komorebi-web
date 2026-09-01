@@ -467,6 +467,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@microsoft/fetch-event-source@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@microsoft/fetch-event-source@npm:2.0.1"
+  checksum: 10c0/38c69e9b9990e6cee715c7bbfa2752f943b42575acadb36facf19bb831f1520c469f854277439154258e0e1dc8650cc85038230d1f451e3f6b62e8faeaa1126c
+  languageName: node
+  linkType: hard
+
 "@napi-rs/wasm-runtime@npm:^1.1.4":
   version: 1.2.2
   resolution: "@napi-rs/wasm-runtime@npm:1.2.2"
@@ -2931,6 +2938,7 @@ __metadata:
     "@inlang/paraglide-js": "npm:^2.18.2"
     "@internationalized/date": "npm:^3.12.0"
     "@lucide/svelte": "npm:^1.31.0"
+    "@microsoft/fetch-event-source": "npm:^2.0.1"
     "@sveltejs/adapter-static": "npm:^3.0.10"
     "@sveltejs/kit": "npm:^2.63.0"
     "@sveltejs/vite-plugin-svelte": "npm:^7.1.2"
