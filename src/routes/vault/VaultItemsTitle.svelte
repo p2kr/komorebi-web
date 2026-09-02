@@ -3,7 +3,7 @@
 	import * as Item from "$lib/components/ui/item";
 	import { Spinner } from "$lib/components/ui/spinner";
 	import { getTitlePrefix } from "$lib/core/utils";
-	import { Book, FileQuestionMark, Image, Play, SearchX, Video, X } from "@lucide/svelte";
+	import { Book, FileQuestionMark, Image, SearchX, Video, X } from "@lucide/svelte";
 	import { Virtualizer } from "virtua/svelte";
 	import prettyBytes from "pretty-bytes";
 	import { Button } from "$lib/components/ui/button";
@@ -11,6 +11,7 @@
 	import { type Component } from "svelte";
 	import { vaultStore } from "$lib/store/vault.svelte";
 	import { handleDelete } from "./vault";
+	import VideoPlayer from "./VideoPlayer.svelte";
 
 	function getMediaTypeIcon(mediaType: MediaType | null): Component {
 		switch (mediaType) {
@@ -55,9 +56,7 @@
 								</Item.Description>
 							</Item.Content>
 							<Item.Actions>
-								<Button variant="outline">
-									<Play />
-								</Button>
+								<VideoPlayer vaultItem={item} />
 								<Button variant="destructive" onclick={() => handleDelete(item)}>
 									<X />
 								</Button>

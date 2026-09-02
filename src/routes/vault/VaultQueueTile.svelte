@@ -50,7 +50,7 @@
 									class="flex min-w-15 flex-col self-center! text-base font-semibold whitespace-break-spaces "
 								>
 									{#if item.eta_seconds}
-										{const eta = pms(item.eta_seconds * 1000, { unitCount: 2 })}
+										{const eta = $derived(pms(item.eta_seconds * 1000, { unitCount: 2 }))}
 										<span class="self-center">{eta.replace(" ", "\n")}</span>
 									{/if}
 								</Item.Media>
