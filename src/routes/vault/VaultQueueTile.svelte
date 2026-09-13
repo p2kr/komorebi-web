@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { getTitlePrefix, toastFailure } from "$lib/core/utils";
-	import type { VaultActionPayload, VaultItem } from "$lib/models/vault";
+	import { toastFailure } from "$lib/core/utils";
+	import type { VaultActionPayload, VaultItem, VaultItemStatus } from "$lib/models/vault";
 	import * as Accordion from "$lib/components/ui/accordion/";
 	import pms from "pretty-ms";
 	import CustomEmpty from "$lib/components/custom/CustomEmpty.svelte";
@@ -11,15 +11,25 @@
 	import { Virtualizer } from "virtua/svelte";
 	import { doApiCall } from "$lib/core/api";
 	import { vaultStore } from "$lib/store/vault.svelte";
-	import { handleDelete } from "./vault";
+	import { handleDelete } from "./vault_service";
 
-	let queueItems = $derived(vaultStore.vaultItems.filter((v) => v.status !== "COMPLETED"));
+	let validStatuses: VaultItemStatus[] = [
+		"DOWNLOADING",
+		"FAILED",
+		"PAUSED",
+		"PENDING",
+		"PROCESSING",
+		"COMPLETED"
+	];
+
+	let queueItems = $derived(vaultStore.vaultItems.filter((v) => validStatuses.includes(v.status)));
 
 	async function handlePauseResume(e: EventTarget | null, item: VaultItem) {
 		const btn = e as HTMLButtonElement;
 		btn.setAttribute("disabled", "true");
-		const endpoint =
-			item.status == "DOWNLOADING" || item.status == "PENDING" ? "vault/pause" : "vault/resume";
+		const endpoint = ["DOWNLOADING", "PENDING"].includes(item.status)
+			? "vault/pause"
+			: "vault/resume";
 
 		const resp = await doApiCall<unknown, VaultActionPayload>(endpoint, {
 			vault_id: item.id
@@ -55,22 +65,21 @@
 									{/if}
 								</Item.Media>
 								<Item.Content>
-									<Item.Title class="line-clamp-1"
-										>{getTitlePrefix(item.season, item.episode, item.media_type).join(" : ")}
+									<Item.Title class="line-clamp-1">
 										{item.title}
 									</Item.Title>
 									<Item.Description>
 										<div class="line-clamp-1">{item.raw_title}</div>
 										<div class="flex items-center gap-1">
-											{#if item.status == "DOWNLOADING"}
+											<span>{progress}</span>
+											&middot;
+											{#if item.status == "DOWNLOADING" || item.status == "PROCESSING"}
 												<Gauge class="inline size-3" />
 												<span>{prettyBytes(item.speed_bps)}/s</span>
 											{:else}
 												<CircleSlash class="inline size-3" />
 												{item.status}
 											{/if}
-											&middot;
-											<span>{progress}</span>
 											&middot;
 											<span>{prettyBytes(item.total_bytes)}</span>
 										</div>
@@ -79,10 +88,12 @@
 								<Item.Actions>
 									<Button
 										variant="secondary"
-										disabled={item.status == "PENDING" || item.status == "COMPLETED"}
+										disabled={item.status == "PENDING" ||
+											item.status == "COMPLETED" ||
+											item.status == "PROCESSING"}
 										onclick={(e) => handlePauseResume(e.target, item)}
 									>
-										{#if item.status == "DOWNLOADING" || item.status == "PENDING"}
+										{#if item.status == "DOWNLOADING"}
 											<Pause />
 										{:else}
 											<StepForward />

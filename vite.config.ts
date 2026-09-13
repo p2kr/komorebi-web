@@ -3,7 +3,9 @@ import adapter from "@sveltejs/adapter-static";
 import { sveltekit } from "@sveltejs/kit/vite";
 import tailwindcss from "@tailwindcss/vite";
 import { playwright } from "@vitest/browser-playwright";
+import { vite as vidstack } from "vidstack/plugins";
 import { defineConfig } from "vitest/config";
+// import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 export default defineConfig({
 	plugins: [
@@ -21,7 +23,9 @@ export default defineConfig({
 			project: "./project.inlang",
 			outdir: "./src/lib/paraglide",
 			strategy: ["url", "baseLocale"]
-		})
+		}),
+
+		vidstack({ include: /\.svelte/ })
 	],
 	resolve: { tsconfigPaths: true },
 	test: {
@@ -55,6 +59,10 @@ export default defineConfig({
 	server: {
 		proxy: {
 			"/api": { target: "http://localhost:5150", changeOrigin: true }
+		},
+		headers: {
+			"Cross-Origin-Embedder-Policy": "require-corp",
+			"Cross-Origin-Opener-Policy": "same-origin"
 		}
 	}
 });

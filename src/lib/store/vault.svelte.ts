@@ -1,10 +1,11 @@
-import type { VaultItem } from "$lib/models/vault";
+import type { VaultItem, VaultSubItem } from "$lib/models/vault";
 import { SvelteMap } from "svelte/reactivity";
 
 class VaultStore {
 	vaultItems = $state<VaultItem[]>([]);
-
 	urlMap = new SvelteMap<string, VaultItem>();
+
+	vaultSubItems = new SvelteMap<string, VaultSubItem[]>();
 
 	isConnected = $state(false);
 

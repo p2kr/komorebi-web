@@ -1,31 +1,32 @@
 <script lang="ts">
 	import { buttonVariants } from "$lib/components/ui/button";
-	import type { VaultItem } from "$lib/models/vault";
+	import type { VaultSubItemDto } from "$lib/models/vault";
 	import { cn } from "$lib/utils";
 	import { Play } from "@lucide/svelte";
-	import "@videojs/html/video/player";
-	import "@videojs/html/video/skin";
-	import type { VideoPlayerElement } from "@videojs/html/video";
-	import { onMount } from "svelte";
-	import { logger } from "$lib/core/telemetry";
+	import { tick } from "svelte";
 	import { Constants } from "$lib/core/constants";
+	import "vidstack/bundle";
+	import type { MediaPlayerElement } from "vidstack/elements";
+	import { betterSubtitleName } from "./vault_service";
+	import { setupPlayer } from "./vault";
 
 	interface Props {
-		vaultItem: VaultItem;
+		dto: VaultSubItemDto;
 	}
 
-	const { vaultItem }: Props = $props();
+	const { dto }: Props = $props();
 
-	const videoSrc = $derived(Constants.BASE_API + "/vault/stream?vault_id=" + vaultItem.id);
+	const baseUrl = Constants.BASE_API + "/vault/stream?path=";
 
-	let player = $state<VideoPlayerElement>();
+	let player: MediaPlayerElement | undefined = $state.raw();
+
 	let dialog = $state<HTMLDialogElement>();
 	let isOpen = $state(false);
 
 	function openDialog() {
 		isOpen = true;
 		// Wait for Svelte to mount the video content before showing the modal
-		setTimeout(() => dialog?.showModal(), 0);
+		tick().then(() => dialog?.showModal());
 	}
 
 	function closeOnBackdrop(e: MouseEvent) {
@@ -35,25 +36,39 @@
 	function handleClose() {
 		isOpen = false;
 	}
-
-	onMount(() => {
-		logger.debug("Playing ", vaultItem.destination_path);
-	});
 </script>
 
-<button class={cn(buttonVariants({ variant: "secondary" }))} onclick={openDialog}>
+<button class={cn(buttonVariants({ variant: "outline" }))} onclick={openDialog}>
 	<Play />
 </button>
 
 <dialog bind:this={dialog} onclick={closeOnBackdrop} onclose={handleClose} class="video-dialog">
 	{#if isOpen}
-		<video-player bind:this={player}>
-			<video-skin class="size-full">
-				<video src={videoSrc} autoplay playsinline>
-					<track kind="captions" />
-				</video>
-			</video-skin>
-		</video-player>
+		<media-player
+			bind:this={player}
+			title={dto.title}
+			src={baseUrl + dto.metadata?.file_path}
+			playsInline
+			autoPlay
+			streamType="on-demand"
+			keep-alive
+			autofocus
+			{...{ "onprovider-setup": () => setupPlayer(player, baseUrl, isOpen, dto.metadata) }}
+		>
+			<media-provider>
+				{#each dto.metadata?.video_subtitles as subs (subs.id)}
+					<track
+						kind="subtitles"
+						src={baseUrl + subs.file_path}
+						srclang={subs.language}
+						label={betterSubtitleName(subs.language, subs.title)}
+						default={subs.is_forced}
+						data-type={subs.format}
+					/>
+				{/each}
+			</media-provider>
+			<media-video-layout></media-video-layout>
+		</media-player>
 	{/if}
 </dialog>
 

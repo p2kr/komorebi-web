@@ -93,8 +93,8 @@
 						<div class="flex gap-1 text-sm text-muted-foreground">
 							{@render tags(item.source, Link)}
 							{@render tags(item.popularity, TrendingUp)}
-							{@render tags(item.parsed_title.video_resolution[0], Hd)}
-							{@render tags(item.parsed_title.language.join(","), Languages)}
+							{@render tags(item.parsed_title.video_resolution?.[0], Hd)}
+							{@render tags(item.parsed_title.language?.join(","), Languages)}
 						</div>
 					</Item.Description>
 				</Item.Content>
