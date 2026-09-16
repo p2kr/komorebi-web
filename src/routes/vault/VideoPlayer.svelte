@@ -16,7 +16,10 @@
 
 	const { dto }: Props = $props();
 
-	const baseUrl = Constants.BASE_API + "/vault/stream?path=";
+	const baseUrl = Constants.BASE_API + "/vault/stream/";
+
+	const dashPath = $derived(baseUrl + dto.metadata?.file_path);
+	const hlsPath = $derived(dashPath.replace(/[^/]*$/, "master.m3u8"));
 
 	let player: MediaPlayerElement | undefined = $state.raw();
 
@@ -47,15 +50,18 @@
 		<media-player
 			bind:this={player}
 			title={dto.title}
-			src={baseUrl + dto.metadata?.file_path}
 			playsInline
 			autoPlay
 			streamType="on-demand"
 			keep-alive
 			autofocus
-			{...{ "onprovider-setup": () => setupPlayer(player, baseUrl, isOpen, dto.metadata) }}
+			{...{
+				"onprovider-setup": () => setupPlayer(player, baseUrl, isOpen, dto.metadata)
+			}}
 		>
 			<media-provider>
+				<source src={dashPath} type="application/dash+xml" />
+				<source src={hlsPath} type="application/x-mpegurl" />
 				{#each dto.metadata?.video_subtitles as subs (subs.id)}
 					<track
 						kind="subtitles"

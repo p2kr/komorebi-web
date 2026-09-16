@@ -4,7 +4,6 @@
 	import { Spinner } from "$lib/components/ui/spinner";
 	import { Book, FileQuestionMark, Image, SearchX, Video, X } from "@lucide/svelte";
 	import { Virtualizer } from "virtua/svelte";
-	import prettyBytes from "pretty-bytes";
 	import { Button } from "$lib/components/ui/button";
 	import type { MediaType } from "$lib/models/media";
 	import { type Component } from "svelte";
@@ -105,9 +104,9 @@
 															{getTitlePrefix(sub_item.season, sub_item.episode)}
 															{sub_item.title || sub_item.raw_title}
 														</Item.Title>
-														<Item.Description>
+														<!-- <Item.Description>
 															<span>{prettyBytes(sub_item.total_bytes)}</span>
-														</Item.Description>
+														</Item.Description> -->
 													</Item.Content>
 													<Item.Actions>
 														<VideoPlayer dto={sub_item} />

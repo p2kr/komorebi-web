@@ -4,14 +4,16 @@
 	import * as Accordion from "$lib/components/ui/accordion/";
 	import pms from "pretty-ms";
 	import CustomEmpty from "$lib/components/custom/CustomEmpty.svelte";
-	import { CheckLine, CircleSlash, Gauge, Pause, StepForward, X } from "@lucide/svelte";
+	import { CheckLine, CircleSlash, Gauge, Pause, RotateCcw, StepForward, X } from "@lucide/svelte";
 	import * as Item from "$lib/components/ui/item";
 	import { Button } from "$lib/components/ui/button";
 	import prettyBytes from "pretty-bytes";
 	import { Virtualizer } from "virtua/svelte";
-	import { doApiCall } from "$lib/core/api";
+	import { doLatestApiCall } from "$lib/core/api";
 	import { vaultStore } from "$lib/store/vault.svelte";
 	import { handleDelete } from "./vault_service";
+	import { toast } from "svelte-sonner";
+	import { debounce } from "es-toolkit";
 
 	let validStatuses: VaultItemStatus[] = [
 		"DOWNLOADING",
@@ -24,22 +26,28 @@
 
 	let queueItems = $derived(vaultStore.vaultItems.filter((v) => validStatuses.includes(v.status)));
 
-	async function handlePauseResume(e: EventTarget | null, item: VaultItem) {
-		const btn = e as HTMLButtonElement;
-		btn.setAttribute("disabled", "true");
-		const endpoint = ["DOWNLOADING", "PENDING"].includes(item.status)
-			? "vault/pause"
-			: "vault/resume";
+	const handlePauseResume = debounce(
+		async function (e: EventTarget | null, item: VaultItem) {
+			const btn = e as HTMLButtonElement;
+			btn.disabled = true;
+			const endpoint = ["DOWNLOADING", "PENDING"].includes(item.status)
+				? "vault/pause"
+				: "vault/resume";
 
-		const resp = await doApiCall<unknown, VaultActionPayload>(endpoint, {
-			vault_id: item.id
-		});
+			const resp = await doLatestApiCall<unknown, VaultActionPayload>(endpoint, {
+				vault_id: item.id
+			});
 
-		if (!resp.success) {
-			toastFailure(resp);
-		}
-		btn.setAttribute("disabled", "false");
-	}
+			if (!resp.success) {
+				toastFailure(resp);
+			} else {
+				toast("Resume/Retry queued");
+			}
+			btn.disabled = false;
+		},
+		500,
+		{ edges: ["leading", "trailing"] }
+	);
 </script>
 
 <div class="queue-tile rounded border">
@@ -81,7 +89,11 @@
 												{item.status}
 											{/if}
 											&middot;
-											<span>{prettyBytes(item.total_bytes)}</span>
+											{#if item.status == "PROCESSING"}
+												{item.status}
+											{:else}
+												<span>{prettyBytes(item.total_bytes)}</span>
+											{/if}
 										</div>
 									</Item.Description>
 								</Item.Content>
@@ -95,6 +107,8 @@
 									>
 										{#if item.status == "DOWNLOADING"}
 											<Pause />
+										{:else if item.status == "FAILED"}
+											<RotateCcw />
 										{:else}
 											<StepForward />
 										{/if}

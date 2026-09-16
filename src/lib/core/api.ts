@@ -42,7 +42,7 @@ export async function doApiCall<T, U = unknown>(
 	}
 }
 
-const apiCache: Record<string, AbortController> = {};
+const abortControllers: Record<string, AbortController> = {};
 
 /**
  * By default, the cache key is the `endpoint`. Pass `cacheKey` in `options` to override.
@@ -52,27 +52,29 @@ export async function doLatestApiCall<T, U = unknown>(
 	json?: U,
 	options?: Options & { cacheKey?: string }
 ): Promise<ApiResponse<T>> {
-	// Differentiate requests. Allow a custom key (e.g., endpoint + method)
 	const key = options?.cacheKey ?? endpoint;
 
-	// Abort the previous request if it exists
-	if (apiCache[key]) {
-		apiCache[key].abort("Canceled by a newer request");
+	// Abort the prior request if one is still in flight
+	if (abortControllers[key]) {
+		abortControllers[key].abort("Canceled by a newer request");
 	}
 
 	const controller = new AbortController();
-	apiCache[key] = controller;
+	abortControllers[key] = controller;
+
+	// Compose the internal controller with any external signal passed in options
+	const combinedSignal = options?.signal
+		? AbortSignal.any([controller.signal, options.signal])
+		: controller.signal;
 
 	try {
-		// Await the API call so we can hook into the 'finally' block
 		return await doApiCall<T, U>(endpoint, json, {
 			...options,
-			signal: controller.signal
+			signal: combinedSignal
 		});
 	} finally {
-		// Only clean up the cache if a NEWER request hasn't already overwritten it
-		if (apiCache[key] === controller) {
-			delete apiCache[key];
+		if (abortControllers[key] === controller) {
+			delete abortControllers[key];
 		}
 	}
 }
