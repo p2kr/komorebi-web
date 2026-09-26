@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { parsedTitleCache } from "$lib/core/cache";
 	import { toastFailure } from "$lib/core/utils";
-	import type { VaultActionPayload, VaultItem, VaultItemStatus } from "$lib/models/vault";
+	import { type DownloadJob, DownloadStatus } from "$lib/models/models";
 	import * as Accordion from "$lib/components/ui/accordion/";
+	import { vaultStore } from "$lib/store/vault.svelte";
 	import pms from "pretty-ms";
 	import CustomEmpty from "$lib/components/custom/CustomEmpty.svelte";
 	import { CheckLine, CircleSlash, Gauge, Pause, RotateCcw, StepForward, X } from "@lucide/svelte";
@@ -10,32 +12,47 @@
 	import prettyBytes from "pretty-bytes";
 	import { Virtualizer } from "virtua/svelte";
 	import { doLatestApiCall } from "$lib/core/api";
-	import { vaultStore } from "$lib/store/vault.svelte";
-	import { handleDelete } from "./vault_service";
+	import { handleDownloadJobDelete } from "./vault_service";
 	import { toast } from "svelte-sonner";
 	import { debounce } from "es-toolkit";
+	import { onMount } from "svelte";
+	import { fetchEventSource } from "@microsoft/fetch-event-source";
+	import { Constants } from "$lib/core/constants";
 
-	let validStatuses: VaultItemStatus[] = [
-		"DOWNLOADING",
-		"FAILED",
-		"PAUSED",
-		"PENDING",
-		"PROCESSING",
-		"COMPLETED"
-	];
+	onMount(() => {
+		const ctrl = new AbortController();
+		fetchEventSource(Constants.BASE_API + "/vault/active", {
+			signal: ctrl.signal,
+			onmessage: (ev) => {
+				try {
+					vaultStore.queueJobs = JSON.parse(ev.data);
 
-	let queueItems = $derived(vaultStore.vaultItems.filter((v) => validStatuses.includes(v.status)));
+					// Parse title
+					// vaultStore.queueJobs.forEach((item) => {
+					// 	getParsedTitle(item.name).then((v) => {
+					// 		parsedTitleMap.set(item.name, v.title?.[0] || item.name);
+					// 	});
+					// });
+				} catch {
+					// Do nothing
+				}
+			}
+		});
+		return () => {
+			ctrl.abort("unmounted queue tile");
+		};
+	});
 
 	const handlePauseResume = debounce(
-		async function (e: EventTarget | null, item: VaultItem) {
+		async function (e: EventTarget | null, item: DownloadJob) {
 			const btn = e as HTMLButtonElement;
 			btn.disabled = true;
 			const endpoint = ["DOWNLOADING", "PENDING"].includes(item.status)
 				? "vault/pause"
 				: "vault/resume";
 
-			const resp = await doLatestApiCall<unknown, VaultActionPayload>(endpoint, {
-				vault_id: item.id
+			const resp = await doLatestApiCall<unknown, Partial<DownloadJob>>(endpoint, {
+				id: item.id
 			});
 
 			if (!resp.success) {
@@ -51,14 +68,14 @@
 </script>
 
 <div class="queue-tile rounded border">
-	<Accordion.Root type="single" value={queueItems.length > 0 ? "queue" : ""}>
+	<Accordion.Root type="single" value={vaultStore.queueJobs.length > 0 ? "queue" : ""}>
 		<Accordion.Item value="queue">
 			<Accordion.Trigger class="items-center p-1 text-lg">Queue</Accordion.Trigger>
 			<Accordion.Content class="max-h-[35vh] min-h-21 overflow-y-auto p-1">
-				{#if queueItems && queueItems.length > 0}
-					<Virtualizer data={queueItems} getKey={(q) => q.id}>
-						{#snippet children(item)}
-							{const progress = $derived(item.progress.toFixed(1) + "%")}
+				{#if vaultStore.queueJobs && vaultStore.queueJobs.length > 0}
+					<Virtualizer data={vaultStore.queueJobs} getKey={(q) => q.id}>
+						{#snippet children(job)}
+							{const progress = $derived(job.progress.toFixed(1) + "%")}
 							<Item.Root
 								variant="outline"
 								class="progress-bar my-0.5 p-1"
@@ -67,32 +84,36 @@
 								<Item.Media
 									class="flex min-w-15 flex-col self-center! text-base font-semibold whitespace-break-spaces "
 								>
-									{#if item.eta_seconds}
-										{const eta = $derived(pms(item.eta_seconds * 1000, { unitCount: 2 }))}
+									{#if job.eta_sec && job.eta_sec > 0}
+										{const eta = $derived(pms(job.eta_sec * 1000, { unitCount: 2 }))}
 										<span class="self-center">{eta.replace(" ", "\n")}</span>
 									{/if}
 								</Item.Media>
 								<Item.Content>
 									<Item.Title class="line-clamp-1">
-										{item.title}
+										{job.name}
 									</Item.Title>
 									<Item.Description>
-										<div class="line-clamp-1">{item.raw_title}</div>
+										{#await parsedTitleCache.fetch(job.name)}
+											<div class="line-clamp-1">{job.name}</div>
+										{:then parsedTitle}
+											<div class="line-clamp-1">{parsedTitle?.title || job.name}</div>
+										{/await}
 										<div class="flex items-center gap-1">
 											<span>{progress}</span>
 											&middot;
-											{#if item.status == "DOWNLOADING" || item.status == "PROCESSING"}
+											{#if job.status == "DOWNLOADING" || job.status == "PROCESSING"}
 												<Gauge class="inline size-3" />
-												<span>{prettyBytes(item.speed_bps)}/s</span>
+												<span>{prettyBytes(job.download_speed)}/s</span>
 											{:else}
 												<CircleSlash class="inline size-3" />
-												{item.status}
+												{job.status}
 											{/if}
 											&middot;
-											{#if item.status == "PROCESSING"}
-												{item.status}
+											{#if job.status == "PROCESSING"}
+												{job.status}
 											{:else}
-												<span>{prettyBytes(item.total_bytes)}</span>
+												<span>{prettyBytes(job.total_size)}</span>
 											{/if}
 										</div>
 									</Item.Description>
@@ -100,20 +121,20 @@
 								<Item.Actions>
 									<Button
 										variant="secondary"
-										disabled={item.status == "PENDING" ||
-											item.status == "COMPLETED" ||
-											item.status == "PROCESSING"}
-										onclick={(e) => handlePauseResume(e.target, item)}
+										disabled={job.status == DownloadStatus.Queued ||
+											job.status == "COMPLETED" ||
+											job.status == "PROCESSING"}
+										onclick={(e) => handlePauseResume(e.target, job)}
 									>
-										{#if item.status == "DOWNLOADING"}
+										{#if job.status == "DOWNLOADING"}
 											<Pause />
-										{:else if item.status == "FAILED"}
+										{:else if job.status == DownloadStatus.Error}
 											<RotateCcw />
 										{:else}
 											<StepForward />
 										{/if}
 									</Button>
-									<Button variant="destructive" onclick={() => handleDelete(item)}>
+									<Button variant="destructive" onclick={() => handleDownloadJobDelete(job)}>
 										<X />
 									</Button>
 								</Item.Actions>

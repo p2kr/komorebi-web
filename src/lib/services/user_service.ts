@@ -1,8 +1,8 @@
 import { doApiCall, type ApiResponse } from "$lib/core/api";
 import { logger } from "$lib/core/telemetry";
 import { formToPayload } from "$lib/core/utils";
-import type { MediaProvider } from "$lib/models/media";
-import type { User } from "$lib/models/user";
+import type { MediaProvider } from "$lib/models/dto";
+import type { User } from "$lib/models/models";
 import { m } from "$lib/paraglide/messages";
 import { getOauthClient } from "$lib/services/oauth";
 
@@ -24,8 +24,8 @@ export async function addUser(formData: FormData): Promise<ApiResponse<User>> {
 			formData.set("access_token", accessToken);
 		} else {
 			return {
-				error: "access_token_error",
-				description: m.failed_to_exchange_token()
+				message: "access_token_error",
+				details: m.failed_to_exchange_token()
 			};
 		}
 

@@ -112,6 +112,6 @@ export class MalOauthClient implements OauthClient {
 		if (resp.success) {
 			return resp.data;
 		}
-		throw new Error(resp.error, { cause: resp.description });
+		throw new Error(resp.message, { cause: resp.details });
 	}
 }

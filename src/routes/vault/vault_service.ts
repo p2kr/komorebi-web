@@ -1,18 +1,24 @@
 import { doApiCall } from "$lib/core/api";
 import { toastFailure } from "$lib/core/utils";
-import type { VaultActionPayload, VaultItem } from "$lib/models/vault";
+import type { DownloadJob, VaultItem } from "$lib/models/models";
 import { toast } from "svelte-sonner";
 
-export async function handleDelete(item: VaultItem) {
+export async function handleVaultItemDelete(item: VaultItem) {
 	const id = toast.warning("Are you sure you want to delete?", {
-		description: item.raw_title,
+		description: item.file_name,
 		descriptionClass: "line-clamp-2",
 		action: {
 			label: "Yes",
 			onClick: async () => {
-				const resp = await doApiCall<unknown, VaultActionPayload>("vault/delete", {
-					vault_id: item.id
-				});
+				const resp = await doApiCall<unknown, Partial<VaultItem>>(
+					"vault/delete_vault_item",
+					{
+						id: item.id
+					},
+					{
+						method: "DELETE"
+					}
+				);
 
 				if (!resp.success) {
 					toastFailure(resp);
@@ -30,26 +36,42 @@ export async function handleDelete(item: VaultItem) {
 	});
 }
 
-import { doLatestApiCall } from "$lib/core/api";
-import type { VaultSubItemDto, VaultSubItemPayload } from "$lib/models/vault";
+export async function handleDownloadJobDelete(item: DownloadJob) {
+	const id = toast.warning("Are you sure you want to delete?", {
+		description: item.name,
+		descriptionClass: "line-clamp-2",
+		action: {
+			label: "Yes",
+			onClick: async () => {
+				const resp = await doApiCall<unknown, Partial<DownloadJob>>(
+					"vault/delete",
+					{
+						id: item.id
+					},
+					{
+						method: "DELETE"
+					}
+				);
 
-export async function get_vault_metadata(ids: string[]) {
-	const resp = await doLatestApiCall<Record<string, VaultSubItemDto[]>, VaultSubItemPayload>(
-		"vault/metadata",
-		{
-			vault_ids: ids
+				if (!resp.success) {
+					toastFailure(resp);
+				} else {
+					toast("Deletion queued");
+				}
+			}
+		},
+		cancel: {
+			label: "No",
+			onClick: () => {
+				toast.dismiss(id);
+			}
 		}
-	);
-	if (resp.success) {
-		return resp.data;
-	} else {
-		throw Error(resp.error);
-	}
+	});
 }
 
 const languageName = new Intl.DisplayNames(["en"], { type: "language" });
 
-export function betterSubtitleName(langCode: string, title: string) {
+export function betterSubtitleName(langCode?: string, title?: string) {
 	if (langCode && langCode.length > 0) {
 		const name = languageName.of(langCode);
 		if (name) {

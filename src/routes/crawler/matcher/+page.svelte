@@ -1,26 +1,25 @@
 <script lang="ts">
-	import { Button } from "$lib/components/ui/button";
-
 	import { page } from "$app/state";
-	import { Input } from "$lib/components/ui/input";
-	import * as Tabs from "$lib/components/ui/tabs";
-	import type { MediaType, MediaEntry } from "$lib/models/media";
-	import { getTitle, toastFailure } from "$lib/core/utils";
-	import { settingsStore } from "$lib/store/settings.svelte";
-	import { createQuery, useQueryClient } from "@tanstack/svelte-query";
-	import { search } from "$lib/services/crawler_service";
-	import { Spinner } from "$lib/components/ui/spinner";
-	import ResultTiles from "./ResultTiles.svelte";
 	import CustomEmpty from "$lib/components/custom/CustomEmpty.svelte";
-	import { CircleX, Search, SearchX } from "@lucide/svelte";
+	import { Button } from "$lib/components/ui/button";
+	import { Input } from "$lib/components/ui/input";
 	import { Separator } from "$lib/components/ui/separator";
+	import { Spinner } from "$lib/components/ui/spinner";
+	import * as Tabs from "$lib/components/ui/tabs";
+	import { getTitle, toastFailure } from "$lib/core/utils";
+	import { MediaType, type MediaEntry } from "$lib/models/dto";
+	import { search } from "$lib/services/crawler_service";
+	import { settingsStore } from "$lib/store/settings.svelte";
+	import { CircleX, Search, SearchX } from "@lucide/svelte";
+	import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 	import { isNotNil } from "es-toolkit";
 
 	import { SvelteMap } from "svelte/reactivity";
+	import ResultTiles from "./ResultTiles.svelte";
 
 	const { mediaEntry }: { mediaEntry?: MediaEntry } = page.state;
 
-	let mediaType = $state<MediaType>("Anime");
+	let mediaType = $state<MediaType>(MediaType.Anime);
 	const primaryTitle = mediaEntry
 		? getTitle(mediaEntry?.media.title, settingsStore.dashboard.title_pref)
 		: "";

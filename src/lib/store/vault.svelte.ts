@@ -1,21 +1,15 @@
-import type { VaultItem, VaultSubItem } from "$lib/models/vault";
-import { SvelteMap } from "svelte/reactivity";
+import type { DownloadJob, VaultItem } from "$lib/models/models";
 
 class VaultStore {
 	vaultItems = $state<VaultItem[]>([]);
-	urlMap = new SvelteMap<string, VaultItem>();
+	queueJobs = $state<DownloadJob[]>([]);
 
-	vaultSubItems = new SvelteMap<string, VaultSubItem[]>();
-
-	isConnected = $state(false);
-
-	setVaultItems(items: VaultItem[]) {
-		this.vaultItems = items;
-		this.urlMap.clear();
-		for (const item of items) {
-			this.urlMap.set(item.source_url, item);
-		}
-	}
+	urlMap = $derived.by(() => {
+		return this.queueJobs.reduce((acc, job) => {
+			acc.set(job.url, job);
+			return acc;
+		}, new Map<string, DownloadJob>());
+	});
 }
 
 export const vaultStore = new VaultStore();

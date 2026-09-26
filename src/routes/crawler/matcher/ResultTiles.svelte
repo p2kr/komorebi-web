@@ -5,9 +5,9 @@
 	import * as Item from "$lib/components/ui/item";
 	import { doApiCall } from "$lib/core/api";
 	import { getTitlePrefix, toastFailure } from "$lib/core/utils";
-	import type { CrawlerResult } from "$lib/models/crawler";
-	import type { MediaType } from "$lib/models/media";
-	import type { VaultAddPayload, VaultItem } from "$lib/models/vault";
+	import type { CrawlerResult } from "$lib/models/dto";
+	import type { MediaType, VaultAddPayload } from "$lib/models/dto";
+	import type { DownloadJob, VaultItem } from "$lib/models/models";
 	import { userStore } from "$lib/store/user.svelte";
 	import { vaultStore } from "$lib/store/vault.svelte";
 	import { Download, Hd, Languages, Link, TrendingUp } from "@lucide/svelte";
@@ -21,7 +21,6 @@
 	}
 
 	const { data, mediaType }: Props = $props();
-
 	let ref = $state<HTMLDivElement>();
 
 	$effect(() => {
@@ -39,6 +38,9 @@
 			toastFailure("Connect a user to download");
 			return;
 		}
+
+		const userId = userStore.currentUser.id;
+
 		if (vaultStore.urlMap.has(item.link)) {
 			goto(resolve("/vault"));
 			return;
@@ -46,17 +48,43 @@
 
 		const resp = await doApiCall<VaultItem, VaultAddPayload>("vault/add", {
 			crawler_result: item,
-			user_id: userStore.currentUser?.id
+			user_id: userId,
+			should_download: false
 		});
 
-		if (!resp.success) {
-			toastFailure(resp);
-		} else {
-			toast("Added to queue");
+		if (!resp.success && resp.status_code === 409) {
+			return toast("Already in queue", {
+				description: "Download again?",
+				action: {
+					label: "Yes",
+					onClick: async () => {
+						const resp = await doApiCall<VaultItem, VaultAddPayload>("vault/add", {
+							crawler_result: item,
+							user_id: userId,
+							should_download: true
+						});
+						if (!resp.success) {
+							toastFailure(resp);
+						} else {
+							toast("Added to queue");
+						}
+					}
+				},
+				cancel: {
+					label: "No",
+					onClick: () => {
+						// Do nothing
+					}
+				}
+			});
 		}
+		if (!resp.success) {
+			return toastFailure(resp);
+		}
+		toast("Added to queue");
 	}
 
-	function getResultsBtnText(item: VaultItem) {
+	function getResultsBtnText(item: DownloadJob) {
 		switch (item.status) {
 			case "DOWNLOADING":
 				return item.status.toString() + " " + item.progress.toFixed(1) + "%";
@@ -85,16 +113,18 @@
 					</Item.Title>
 					<Item.Description>
 						<div class="line-clamp-1">
-							{getTitlePrefix(item.parsed_title.season, item.parsed_title.episode, mediaType).join(
-								" : "
-							)}
-							{item.parsed_title.title}
+							{getTitlePrefix(
+								item.parsed_title?.season,
+								item.parsed_title?.episode,
+								mediaType
+							).join(" : ")}
+							{item.parsed_title?.title}
 						</div>
 						<div class="flex gap-1 text-sm text-muted-foreground">
 							{@render tags(item.source, Link)}
 							{@render tags(item.popularity, TrendingUp)}
-							{@render tags(item.parsed_title.video_resolution?.[0], Hd)}
-							{@render tags(item.parsed_title.language?.join(","), Languages)}
+							{@render tags(item.parsed_title?.video_resolution?.[0], Hd)}
+							{@render tags(item.parsed_title?.language?.join(","), Languages)}
 						</div>
 					</Item.Description>
 				</Item.Content>

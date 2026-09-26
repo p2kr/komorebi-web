@@ -4,7 +4,7 @@
 	import { Progress } from "$lib/components/ui/progress";
 	import { ScrollArea } from "$lib/components/ui/scroll-area";
 	import { cleanSynopsis } from "$lib/core/utils";
-	import type { MediaEntry } from "$lib/models/media";
+	import type { MediaEntry } from "$lib/models/dto";
 	import { userStore } from "$lib/store/user.svelte";
 	import type { Component } from "svelte";
 	import { getPrimaryTitle, getSecondaryTitle } from "./dashboard.svelte";
@@ -50,6 +50,8 @@
 				return EyeDashed;
 			case "Nsfw":
 				return EyeOff;
+			default:
+				return Eye;
 		}
 	});
 

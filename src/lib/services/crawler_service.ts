@@ -1,7 +1,6 @@
 import { doApiCall } from "$lib/core/api";
 import { logger } from "$lib/core/telemetry";
-import type { CrawlerResult } from "$lib/models/crawler";
-import type { MediaType } from "$lib/models/media";
+import type { CrawlerResult, MediaType } from "$lib/models/dto";
 import pms from "pretty-ms";
 
 export async function search(query: string, media_type: MediaType, signal: AbortSignal) {

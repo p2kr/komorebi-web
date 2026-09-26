@@ -1,4 +1,4 @@
-import type { ListStatus, MediaType } from "$lib/models/media";
+import { ListStatus, MediaType } from "$lib/models/dto";
 
 export type FilterOption<T = string> = {
 	value: T;
@@ -29,11 +29,11 @@ export interface FilterDefinition<T = string> {
 
 const mediaTypeOptions: FilterOption<MediaType>[] = [
 	{
-		value: "Anime",
+		value: MediaType.Anime,
 		label: "Anime"
 	},
 	{
-		value: "Manga",
+		value: MediaType.Manga,
 		label: "Manga"
 	}
 ];
@@ -44,27 +44,27 @@ const animeListStatus: FilterOption<ListStatus | "">[] = [
 		label: "All"
 	},
 	{
-		value: "Current",
+		value: ListStatus.Current,
 		label: "Watching"
 	},
 	{
-		value: "Planning",
+		value: ListStatus.Planning,
 		label: "Plan to Watch"
 	},
 	{
-		value: "Completed",
+		value: ListStatus.Completed,
 		label: "Completed"
 	},
 	{
-		value: "Dropped",
+		value: ListStatus.Dropped,
 		label: "Dropped"
 	},
 	{
-		value: "Paused",
+		value: ListStatus.Paused,
 		label: "On Hold"
 	},
 	{
-		value: "Repeating",
+		value: ListStatus.Repeating,
 		label: "Re-watching"
 	}
 ];
@@ -75,27 +75,27 @@ const mangaListStatus: FilterOption<ListStatus | "">[] = [
 		label: "All"
 	},
 	{
-		value: "Current",
+		value: ListStatus.Current,
 		label: "Reading"
 	},
 	{
-		value: "Planning",
+		value: ListStatus.Planning,
 		label: "Plan to Read"
 	},
 	{
-		value: "Completed",
+		value: ListStatus.Completed,
 		label: "Completed"
 	},
 	{
-		value: "Dropped",
+		value: ListStatus.Dropped,
 		label: "Dropped"
 	},
 	{
-		value: "Paused",
+		value: ListStatus.Paused,
 		label: "On Hold"
 	},
 	{
-		value: "Repeating",
+		value: ListStatus.Repeating,
 		label: "Re-reading"
 	}
 ];

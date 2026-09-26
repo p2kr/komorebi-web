@@ -1,5 +1,5 @@
 import { StorageKeys } from "$lib/core/constants";
-import type { User } from "$lib/models/user";
+import type { User } from "$lib/models/models";
 import localforage from "localforage";
 
 class UserStore {

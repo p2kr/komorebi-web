@@ -1,5 +1,5 @@
 import { getTitle } from "$lib/core/utils";
-import type { MediaTitle } from "$lib/models/media";
+import type { MediaTitle } from "$lib/models/dto";
 import { settingsStore } from "$lib/store/settings.svelte";
 import {
 	FILTER_CONFIGS,

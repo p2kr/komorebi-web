@@ -1,11 +1,12 @@
-import { doApiCall, type SuccessResponse } from "$lib/core/api";
+import { doApiCall } from "$lib/core/api";
 import type {
 	ListStatus,
 	MediaEntry,
 	MediaProvider,
 	MediaType,
-	PaginatedResponse
-} from "$lib/models/media";
+	PaginatedResponse,
+	SuccessResponse
+} from "$lib/models/dto";
 import { createInfiniteQuery } from "@tanstack/svelte-query";
 
 export interface FetchUserMediaOptions {

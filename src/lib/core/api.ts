@@ -1,18 +1,7 @@
 import { PUBLIC_API_URL } from "$env/static/public";
 import { Constants } from "$lib/core/constants";
-import ky, { type Options } from "ky";
-
-export type SuccessResponse<T> = {
-	success: true;
-	data: T;
-};
-
-export type FailureResponse = {
-	success?: false;
-	error?: string;
-	description?: string;
-	errors?: unknown;
-};
+import type { FailureResponse, SuccessResponse } from "$lib/models/dto";
+import ky, { HTTPError, type Options } from "ky";
 
 export type ApiResponse<T> = SuccessResponse<T> | FailureResponse;
 
@@ -24,7 +13,7 @@ export async function doApiCall<T, U = unknown>(
 	try {
 		endpoint = endpoint.startsWith("/") ? endpoint : "/" + endpoint;
 		const prefix = PUBLIC_API_URL + Constants.BASE_API; // TODO: Smart join (skip '/')
-		const resp: ApiResponse<T> = await ky(endpoint, {
+		return await ky(endpoint, {
 			method: "post",
 			json,
 			prefix,
@@ -32,12 +21,12 @@ export async function doApiCall<T, U = unknown>(
 			totalTimeout: 30_000,
 			...options
 		}).json();
-
-		return resp;
 	} catch (e) {
 		return {
-			error: "error occurred in " + endpoint,
-			description: e instanceof Error ? e.message : String(e)
+			success: false,
+			status_code: e instanceof HTTPError ? e.data?.status_code : undefined,
+			message: "error occurred in " + endpoint,
+			details: e instanceof Error ? e.message : String(e)
 		} satisfies FailureResponse;
 	}
 }

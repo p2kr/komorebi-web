@@ -1,6 +1,6 @@
-import { doApiCall, type ApiResponse, type FailureResponse } from "$lib/core/api";
+import { doApiCall, type ApiResponse } from "$lib/core/api";
 import { logger } from "$lib/core/telemetry";
-import type { PaginatedResponse } from "$lib/models/media";
+import type { FailureResponse, PaginatedResponse } from "$lib/models/dto";
 import type { MediaClientParams } from "./dashboard_config";
 
 // pub struct MediaClientParams {
@@ -16,8 +16,8 @@ export async function getDashboardItems(
 ): Promise<ApiResponse<PaginatedResponse>> {
 	if (!filters.media_type || !user_id) {
 		return {
-			error: "MISSING_PARAMS",
-			description: "media_type and user_id are required"
+			message: "MISSING_PARAMS",
+			details: "media_type and user_id are required"
 		} as FailureResponse;
 	}
 	const payload = {
@@ -27,7 +27,7 @@ export async function getDashboardItems(
 	};
 
 	const resp = await doApiCall<PaginatedResponse>(
-		"media/" + filters.media_type.toLowerCase(),
+		"dashboard/" + filters.media_type.toLowerCase(),
 		payload
 	);
 

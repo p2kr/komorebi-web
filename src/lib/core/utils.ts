@@ -1,5 +1,4 @@
-import type { FailureResponse } from "$lib/core/api";
-import type { MediaTitle, MediaType } from "$lib/models/media";
+import { type FailureResponse, type MediaTitle, MediaType } from "$lib/models/dto";
 import { m } from "$lib/paraglide/messages";
 import type { SettingsData } from "$lib/store/settings.svelte";
 import DOMPurify from "dompurify";
@@ -25,13 +24,13 @@ export function toastFailure(resp: FailureResponse | string | Error) {
 
 	if (resp instanceof Error) {
 		toast(m.error(), {
-			description: resp.message + "->\n" + (resp.cause || "")
+			description: resp.message + (resp.cause ? " -> " + (resp.cause as string) : "")
 		});
 		return;
 	}
 
-	toast(resp.error || m.error(), {
-		description: resp.description
+	toast(resp.message || m.error(), {
+		description: resp.details
 	});
 }
 
@@ -100,11 +99,11 @@ export function getTitle(
 export function getTitlePrefix(
 	season: string | string[] | null = "?",
 	episode: string | string[] | null = "?",
-	mediaType: MediaType | null = "Anime"
+	mediaType: MediaType | null = MediaType.Anime
 ) {
 	season = season || "?";
 	episode = episode || "?";
-	mediaType = mediaType || "Anime";
+	mediaType = mediaType || MediaType.Anime;
 
 	let prefix1 = "";
 	let prefix2 = "";

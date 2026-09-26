@@ -5,12 +5,12 @@
 	import * as Item from "$lib/components/ui/item";
 	import * as Table from "$lib/components/ui/table";
 	import * as Tabs from "$lib/components/ui/tabs";
-	import { type MediaProvider } from "$lib/models/media";
+	import { type MediaProvider } from "$lib/models/dto";
 	import { m } from "$lib/paraglide/messages";
 	import { cn } from "$lib/utils";
 	import { ExternalLink, Plus } from "@lucide/svelte";
 	import * as utils from "$lib/core/utils";
-	import type { User } from "$lib/models/user";
+	import type { User } from "$lib/models/models";
 	import { toast } from "svelte-sonner";
 	import { addUser } from "$lib/services/user_service";
 	import { invalidate } from "$app/navigation";

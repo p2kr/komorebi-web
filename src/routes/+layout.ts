@@ -1,5 +1,5 @@
 import { doApiCall } from "$lib/core/api";
-import type { User } from "$lib/models/user";
+import type { User } from "$lib/models/models";
 import { settingsStore } from "$lib/store/settings.svelte";
 import { userStore } from "$lib/store/user.svelte";
 import type { LayoutLoad } from "./$types";

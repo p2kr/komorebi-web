@@ -1,4 +1,4 @@
-import type { MediaProvider } from "$lib/models/media";
+import type { MediaProvider } from "$lib/models/dto";
 import { AnilistOauthClient } from "$lib/services/anilist_oauth";
 import { MalOauthClient } from "$lib/services/mal_oauth";
 
@@ -16,6 +16,8 @@ export function getOauthClient(provider: MediaProvider): OauthClient {
 		case "MAL":
 			return new MalOauthClient();
 		case "ANILIST":
+			return new AnilistOauthClient();
+		default:
 			return new AnilistOauthClient();
 	}
 }

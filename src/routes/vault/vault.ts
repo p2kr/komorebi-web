@@ -1,56 +1,37 @@
 import { logger } from "$lib/core/telemetry";
-import type { SubtitleFont, VaultMetadataDto, VideoChapter } from "$lib/models/vault";
+import type { VaultItem, VideoChapter } from "$lib/models/models";
 import { isNil } from "es-toolkit";
 import { TextTrack } from "vidstack";
 import type { MediaPlayerElement } from "vidstack/elements";
 
 export function setupPlayer(
 	player: MediaPlayerElement | undefined,
-	baseUrl: string,
+	_baseUrl: string,
 	isOpen: boolean,
-	dto: VaultMetadataDto | null
+	dto: VaultItem | null
 ) {
 	if (isNil(player) || !isOpen) {
 		logger.debug("not found player", player, "isOpen", isOpen);
 		return;
 	}
 
-	// TODO: Implement this
-	// setupSubtitleRenderer(player, baseUrl, dto?.subtitle_fonts);
-
-	player.addEventListener("can-play", () => setupChapters(player, dto?.video_chapters || []), {
-		once: true
-	});
-}
-
-// TODO:
-export function setupSubtitleRenderer(
-	player: MediaPlayerElement,
-	baseUrl: string,
-	fonts: SubtitleFont[] = []
-) {
-	const _fonts = fonts.reduce(
-		(acc, v) => {
-			acc[v.font_name] = baseUrl + v.file_path;
-			return acc;
+	player.addEventListener(
+		"can-play",
+		() => {
+			setupChapters(player, dto?.video_chapters || []);
+			if (dto?.duration_sec != null) {
+				player.duration = dto?.duration_sec;
+			} else {
+				player.streamType = "live";
+			}
+			// if (player.provider?.type == "video") {
+			// 	player.provider.loadSource(dto?.file_path);
+			// }
 		},
-		{} as Record<string, string>
+		{
+			once: true
+		}
 	);
-
-	logger.debug("fonts loaded: ", _fonts);
-
-	// 3. Initialize the LibASS Renderer with the worker URLs
-	// workerUrl: "/jassub/jassub-worker.js",
-	// availableFonts: _fonts,
-	// @ ts-expect-error expected type mismatch on import
-	// const renderer = new LibASSTextRenderer(() => Promise.resolve({ default: JassubWithEvents }), {
-	//   workerUrl: "/jassub/jassub-worker.js",
-
-	//   availableFonts: _fonts,
-	//   debug: true,
-	// });
-
-	// player.textRenderers.add(renderer);
 }
 
 function setupChapters(player: MediaPlayerElement, chapters: VideoChapter[]) {
@@ -70,7 +51,9 @@ function setupChapters(player: MediaPlayerElement, chapters: VideoChapter[]) {
 	});
 
 	for (const chapter of chapters) {
-		chapterTrack.addCue(new VTTCue(chapter.start_time, chapter.end_time, chapter.title));
+		if (chapter.start_time && chapter.end_time && chapter.title) {
+			chapterTrack.addCue(new VTTCue(chapter.start_time, chapter.end_time, chapter.title));
+		}
 	}
 
 	logger.debug("chapters: ", chapterTrack);

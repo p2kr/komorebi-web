@@ -4,7 +4,7 @@
 	import * as Dialog from "$lib/components/ui/dialog";
 	import { Spinner } from "$lib/components/ui/spinner";
 	import * as Table from "$lib/components/ui/table";
-	import type { User } from "$lib/models/user";
+	import type { User } from "$lib/models/models";
 	import { m } from "$lib/paraglide/messages";
 	import { userStore } from "$lib/store/user.svelte";
 	import { cn } from "$lib/utils";

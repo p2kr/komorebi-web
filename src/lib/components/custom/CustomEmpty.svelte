@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { FailureResponse } from "$lib/core/api";
+	import type { FailureResponse } from "$lib/models/dto";
 	import type { Component, Snippet } from "svelte";
 	import * as Empty from "$lib/components/ui/empty";
 	import type { ClassValue } from "svelte/elements";
@@ -23,8 +23,8 @@
 		<Empty.Title>{title}</Empty.Title>
 		<Empty.Description>
 			{#if typeof desc === "object"}
-				<div>{desc.error}</div>
-				<div>{desc.description}</div>
+				<div>{desc.message}</div>
+				<div>{desc.details}</div>
 			{:else}
 				<div>{desc}</div>
 			{/if}

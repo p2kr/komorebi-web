@@ -16,7 +16,7 @@ export default defineConfig({
 				runes: ({ filename }) =>
 					filename.split(/[/\\]/).includes("node_modules") ? undefined : true
 			},
-			adapter: adapter({ fallback: "index.html" })
+			adapter: adapter({ fallback: "index.html", precompress: true })
 		}),
 
 		paraglideVitePlugin({
@@ -58,7 +58,7 @@ export default defineConfig({
 	},
 	server: {
 		proxy: {
-			"/api": { target: "http://localhost:5150", changeOrigin: true }
+			"/api": { target: "http://localhost:8080", changeOrigin: true }
 		},
 		headers: {
 			"Cross-Origin-Embedder-Policy": "require-corp",

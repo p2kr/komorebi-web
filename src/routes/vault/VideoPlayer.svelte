@@ -1,25 +1,28 @@
 <script lang="ts">
 	import { buttonVariants } from "$lib/components/ui/button";
-	import type { VaultSubItemDto } from "$lib/models/vault";
+	import type { VaultItem } from "$lib/models/models";
 	import { cn } from "$lib/utils";
 	import { Play } from "@lucide/svelte";
 	import { tick } from "svelte";
 	import { Constants } from "$lib/core/constants";
 	import "vidstack/bundle";
+	import "vidstack/player/styles/default/theme.css";
+	import "vidstack/player/styles/default/layouts/video.css";
 	import type { MediaPlayerElement } from "vidstack/elements";
-	import { betterSubtitleName } from "./vault_service";
+	// import { betterSubtitleName } from "./vault_service";
 	import { setupPlayer } from "./vault";
 
 	interface Props {
-		dto: VaultSubItemDto;
+		item: VaultItem;
 	}
 
-	const { dto }: Props = $props();
+	const { item }: Props = $props();
 
-	const baseUrl = Constants.BASE_API + "/vault/stream/";
+	const baseUrl = Constants.BASE_API + "/stream/video/";
 
-	const dashPath = $derived(baseUrl + dto.metadata?.file_path);
-	const hlsPath = $derived(dashPath.replace(/[^/]*$/, "master.m3u8"));
+	const urls = $derived({
+		mkv: [baseUrl + encodeURIComponent(item.file_path), "video/x-matroska"]
+	} as const);
 
 	let player: MediaPlayerElement | undefined = $state.raw();
 
@@ -48,30 +51,30 @@
 <dialog bind:this={dialog} onclick={closeOnBackdrop} onclose={handleClose} class="video-dialog">
 	{#if isOpen}
 		<media-player
+			class="h-full w-full bg-black text-white"
 			bind:this={player}
-			title={dto.title}
+			title={item.file_name}
 			playsInline
 			autoPlay
-			streamType="on-demand"
+			streamType="live"
 			keep-alive
 			autofocus
+			src={urls.mkv[0]}
 			{...{
-				"onprovider-setup": () => setupPlayer(player, baseUrl, isOpen, dto.metadata)
+				"onprovider-setup": () => setupPlayer(player, baseUrl, isOpen, item)
 			}}
 		>
 			<media-provider>
-				<source src={dashPath} type="application/dash+xml" />
-				<source src={hlsPath} type="application/x-mpegurl" />
-				{#each dto.metadata?.video_subtitles as subs (subs.id)}
-					<track
-						kind="subtitles"
-						src={baseUrl + subs.file_path}
-						srclang={subs.language}
-						label={betterSubtitleName(subs.language, subs.title)}
-						default={subs.is_forced}
-						data-type={subs.format}
-					/>
-				{/each}
+				<!--{#each item.video_subtitles as subs (subs.id)}-->
+				<!--	<track-->
+				<!--		kind="subtitles"-->
+				<!--		src={baseUrl + subs.file_path}-->
+				<!--		srclang={subs.lang}-->
+				<!--		label={betterSubtitleName(subs.lang, subs.title)}-->
+				<!--		default={subs.is_forced}-->
+				<!--		data-type={subs.format}-->
+				<!--	/>-->
+				<!--{/each}-->
 			</media-provider>
 			<media-video-layout></media-video-layout>
 		</media-player>
