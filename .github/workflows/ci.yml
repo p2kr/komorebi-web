@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Run linting
+        run: yarn lint
+
+      - name: Build
+        run: yarn build
+
+      # Run tests (including playwright browsers)
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Run tests
+        run: yarn test
