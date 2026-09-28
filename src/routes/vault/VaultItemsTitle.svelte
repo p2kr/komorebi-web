@@ -7,6 +7,7 @@
 	import { parsedTitleCache } from "$lib/core/cache";
 	import { Constants } from "$lib/core/constants";
 	import { getTitlePrefix } from "$lib/core/utils";
+	import { DownloadStatus } from "$lib/models/models";
 	import type { MediaType } from "$lib/models/dto";
 	import { vaultStore } from "$lib/store/vault.svelte";
 	import { Book, FileQuestionMark, Image, SearchX, Video, X } from "@lucide/svelte";
@@ -109,7 +110,13 @@
 								</Item.Description>
 							</Item.Content>
 							<Item.Actions>
-								<VideoPlayer {item} />
+								{#if item.status == DownloadStatus.Ready}
+									<VideoPlayer {item} />
+								{:else}
+									<Button disabled variant="outline">
+										<Spinner />
+									</Button>
+								{/if}
 								<Button
 									variant="destructive"
 									onclick={(e) => {

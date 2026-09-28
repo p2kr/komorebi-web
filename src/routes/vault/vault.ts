@@ -1,3 +1,4 @@
+import { parsedTitleCache } from "$lib/core/cache";
 import { logger } from "$lib/core/telemetry";
 import type { VaultItem, VideoChapter } from "$lib/models/models";
 import { isNil } from "es-toolkit";
@@ -8,25 +9,21 @@ export function setupPlayer(
 	player: MediaPlayerElement | undefined,
 	_baseUrl: string,
 	isOpen: boolean,
-	dto: VaultItem | null
+	item: VaultItem
 ) {
 	if (isNil(player) || !isOpen) {
 		logger.debug("not found player", player, "isOpen", isOpen);
 		return;
 	}
 
+	parsedTitleCache
+		.fetch(item.file_name)
+		.then((v) => (player.title = v?.title?.[0] || item.file_name));
+
 	player.addEventListener(
 		"can-play",
 		() => {
-			setupChapters(player, dto?.video_chapters || []);
-			if (dto?.duration_sec != null) {
-				player.duration = dto?.duration_sec;
-			} else {
-				player.streamType = "live";
-			}
-			// if (player.provider?.type == "video") {
-			// 	player.provider.loadSource(dto?.file_path);
-			// }
+			setupChapters(player, item?.video_chapters || []);
 		},
 		{
 			once: true
