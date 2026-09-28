@@ -108,11 +108,11 @@
 		{#snippet children(item)}
 			<Item.Root variant="outline" class="my-0.5 p-1">
 				<Item.Content>
-					<Item.Title class="line-clamp-2 text-base">
+					<Item.Title class="line-clamp-2 text-base break-all">
 						{item.title}
 					</Item.Title>
 					<Item.Description>
-						<div class="line-clamp-1">
+						<div class="line-clamp-1 break-all">
 							{getTitlePrefix(
 								item.parsed_title?.season,
 								item.parsed_title?.episode,

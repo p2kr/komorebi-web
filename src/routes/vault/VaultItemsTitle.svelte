@@ -79,11 +79,11 @@
 								<Icon />
 							</Item.Media>
 							<Item.Content>
-								<Item.Title class="line-clamp-1">
+								<Item.Title class="line-clamp-1 ">
 									{#await parsedTitleCache.fetch(item.file_name)}
-										<span class="line-clamp-1">{item.file_name}</span>
+										<span class="line-clamp-1 break-all">{item.file_name}</span>
 									{:then parsedTitle}
-										<span class="line-clamp-1"
+										<span class="line-clamp-1 break-all"
 											>{getTitlePrefix(
 												parsedTitle?.season,
 												parsedTitle?.episode,
@@ -93,7 +93,7 @@
 									{/await}
 								</Item.Title>
 								<Item.Description>
-									<div class="line-clamp-1">
+									<div class="line-clamp-1 break-all">
 										{item.file_name}
 									</div>
 									<div>

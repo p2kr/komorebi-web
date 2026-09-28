@@ -95,9 +95,9 @@
 									</Item.Title>
 									<Item.Description>
 										{#await parsedTitleCache.fetch(job.name)}
-											<div class="line-clamp-1">{job.name}</div>
+											<div class="line-clamp-1 break-all">{job.name}</div>
 										{:then parsedTitle}
-											<div class="line-clamp-1">{parsedTitle?.title || job.name}</div>
+											<div class="line-clamp-1 break-all">{parsedTitle?.title || job.name}</div>
 										{/await}
 										<div class="flex items-center gap-1">
 											<span>{progress}</span>

@@ -29,6 +29,16 @@ export function setupPlayer(
 			once: true
 		}
 	);
+
+	player.addEventListener(
+		"auto-play-fail",
+		(ev) => {
+			logger.warn("autoplay failed. muting and retrying", ev);
+			player.muted = true;
+			player.play().catch((e) => logger.error("Autoplay failed:", e));
+		},
+		{ once: true }
+	);
 }
 
 function setupChapters(player: MediaPlayerElement, chapters: VideoChapter[]) {

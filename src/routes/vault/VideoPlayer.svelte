@@ -1,10 +1,8 @@
 <script lang="ts">
 	import { Button } from "$lib/components/ui/button";
-	import { parsedTitleCache } from "$lib/core/cache";
 	import type { VaultItem } from "$lib/models/models";
 	import { Play } from "@lucide/svelte";
 	import { betterSubtitleName } from "./vault_service";
-	import { tick } from "svelte";
 	import { Constants } from "$lib/core/constants";
 	import "vidstack/bundle";
 	import type { MediaPlayerElement } from "vidstack/elements";
@@ -18,14 +16,6 @@
 
 	const baseUrl = $derived(Constants.BASE_API + "/stream/video/" + item.id + "/");
 
-	let playerTitle = $derived(item.file_name);
-
-	$effect(() => {
-		parsedTitleCache
-			.fetch(item.file_name)
-			.then((v) => (playerTitle = v?.title?.[0] || item.file_name));
-	});
-
 	let player: MediaPlayerElement | undefined = $state.raw();
 
 	let dialog = $state<HTMLDialogElement>();
@@ -36,9 +26,8 @@
 	}
 
 	function openDialog() {
+		dialog?.showModal();
 		isOpen = true;
-		// Wait for Svelte to mount the video content before showing the modal
-		tick().then(() => dialog?.showModal());
 	}
 
 	function closeOnBackdrop(e: MouseEvent) {
@@ -59,7 +48,7 @@
 		<media-player
 			class="h-full w-full bg-black text-white"
 			bind:this={player}
-			title={playerTitle}
+			title={item.file_name}
 			playsInline
 			autoPlay
 			streamType="on-demand"

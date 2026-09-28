@@ -19,7 +19,7 @@ Web client for Komorebi anime and manga management.
 - **Tools**:
   - **Smart Matcher**: Match external links and references to normalized media entries.
   - **Crawler Sandbox**: Test and inspect media scraping and matching behavior.
-  - **Vault**: View locally stored and cached collection data.
+  - **Vault**: View locally stored and cached collection data, featuring a built-in video player with DASH/HLS stream support, subtitles, and chapter navigation.
 - **Multilingual Support**:
   - Interface available in multiple languages with locale switching.
 - **Theme Preferences**:
@@ -48,7 +48,7 @@ komorebi-web/
 │       ├── dashboard/          # Collection overview
 │       ├── discover/           # Title discovery and search
 │       ├── crawler/            # Matcher and crawler sandbox tools
-│       ├── vault/              # Local storage manager
+│       ├── vault/              # Local storage manager and media player
 │       └── browser/            # Media catalog browser
 └── tests/                      # Component and unit test suites
 ```
