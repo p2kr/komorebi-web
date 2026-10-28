@@ -64,7 +64,7 @@
 		"@microsoft/fetch-event-source": "^2.0.1",
 		"@tanstack/svelte-query": "^6.1.38",
 		"consola": "^3.4.2",
-		"dompurify": "^3.4.13",
+		"dompurify": "^3.4.17",
 		"es-toolkit": "^1.50.0",
 		"ky": "^2.0.2",
 		"localforage": "^1.10.0",
